@@ -1,0 +1,21 @@
+# Site settings
+home: 首页
+archives: 归档
+tags: 标签
+categories: 分类
+search: 搜索
+about: 关于
+
+# Article
+read_more: 阅读全文
+share_on: 分享到
+author: 作者
+posted: 发表于
+updated: 更新于
+license: 许可协议
+
+# Comments
+comments: 评论
+
+# Other
+powered_by: 由 %s 强力驱动
