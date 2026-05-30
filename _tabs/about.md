@@ -1,6 +1,6 @@
 ---
 layout: page
-title: 标签
-order: 4
-permalink: /tags/
+title: 关于
+order: 5
+permalink: /about/
 ---
