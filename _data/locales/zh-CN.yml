@@ -19,3 +19,18 @@ comments: 评论
 
 # Other
 powered_by: 由 %s 强力驱动
+
+# Navigation Tabs (这是导航栏的关键！)
+tabs:
+  - title: 首页
+    url: /
+  - title: 归档
+    url: /archives/
+  - title: 分类
+    url: /categories/
+  - title: 标签
+    url: /tags/
+  - title: 关于
+    url: /about/
+  - title: 后台
+    url: /admin/
