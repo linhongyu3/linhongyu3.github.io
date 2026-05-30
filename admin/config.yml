@@ -2,38 +2,22 @@ backend:
   name: github
   repo: linhongyu3/linhongyu3.github.io
   branch: main
-  client_id: Ov23li9SyL7RzvbQWLU4
   base_url: https://linhongyu3.github.io
+
+locale: zh-CN  # 👈 新增这一行！这是强制让后台全变成中文的魔法咒语
 
 media_folder: assets/img/uploads
 public_folder: /assets/img/uploads
 
 collections:
   - name: posts
-    label: 文章
+    label: 文章  # 👈 修正了这里的缩进，让它属于 posts
     folder: _posts
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
-      - name: title
-        label: 标题
-        widget: text
-      - name: date
-        label: 日期
-        widget: datetime
-        default: ""
-        format: "yyyy-MM-dd HH:mm:ss Z"
-      - name: categories
-        label: 分类
-        widget: select
-        options:
-          - 技术
-          - 折腾
-          - 生活
-        default: 技术
-      - name: tags
-        label: 标签
-        widget: list
-      - name: body
-        label: 正文
-        widget: markdown
+      - { name: title, label: 标题, widget: text }
+      - { name: date, label: 日期, widget: datetime, format: "yyyy-MM-dd HH:mm:ss Z" }
+      - { name: categories, label: 分类, widget: select, options: [技术, 折腾, 生活], default: 技术 }
+      - { name: tags, label: 标签, widget: list }
+      - { name: body, label: 正文, widget: markdown }
