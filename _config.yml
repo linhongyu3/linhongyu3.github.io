@@ -216,6 +216,8 @@ exclude:
   - purgecss.js
   - "*.config.js"
   - "package*.json"
+include:
+  - admin
 
 jekyll-archives:
   enabled: [categories, tags]
