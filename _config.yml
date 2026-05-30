@@ -1,6 +1,19 @@
 # The Site Configuration
 
-# Import the theme
+# Import the themedefaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      comments: true
+      toc: true
+      permalink: /posts/:title/
+  - scope:
+      path: _drafts
+    values:
+      comments: false
+  # 移除任何针对 type: tabs 的 defaults（让 _tabs 文件自己控制 permalink）
 theme: jekyll-theme-chirpy
 
 # The language of the webpage › http://www.lingoes.net/en/translator/langcode.htm
@@ -71,7 +84,7 @@ pageviews:
 
 # Prefer color scheme setting.
 #
-# Note: Keep empty will follow the system prefer color by default,
+# Note: Keep empty will follow the system prefer color by ,
 # and there will be a toggle to switch the theme between dark and light
 # on the bottom left of the sidebar.
 #
@@ -115,11 +128,11 @@ comments:
     repo_id:
     category:
     category_id:
-    mapping: # optional, default to 'pathname'
-    strict: # optional, default to '0'
-    input_position: # optional, default to 'bottom'
-    lang: # optional, default to the value of `site.lang`
-    reactions_enabled: # optional, default to the value of `1`
+    mapping: # optional,  to 'pathname'
+    strict: # optional,  to '0'
+    input_position: # optional,  to 'bottom'
+    lang: # optional,  to the value of `site.lang`
+    reactions_enabled: # optional,  to the value of `1`
 
 # Self-hosted static assets, optional › https://github.com/cotes2020/chirpy-static-assets
 assets:
@@ -151,7 +164,7 @@ kramdown:
   syntax_highlighter: rouge
   syntax_highlighter_opts: # Rouge Options › https://github.com/jneen/rouge#full-options
     css_class: highlight
-    # default_lang: console
+    # _lang: console
     span:
       line_numbers: false
     block:
@@ -165,7 +178,7 @@ collections:
 
 defaults:
   - scope:
-      path: "" # 所有文件
+      path: ""
       type: posts
     values:
       layout: post
@@ -176,12 +189,7 @@ defaults:
       path: _drafts
     values:
       comments: false
-  - scope:
-      path: ""
-      type: tabs # 导航栏集合
-    values:
-      layout: page
-      permalink: /:name/  # ✅ 关键修正：导航页直接放在根目录（如 /about/、/admin/）
+  # 移除任何针对 type: tabs 的 defaults（让 _tabs 文件自己控制 permalink）
 
 sass:
   style: compressed
