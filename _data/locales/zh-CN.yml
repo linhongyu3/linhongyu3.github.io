@@ -1,4 +1,4 @@
-# Site settings
+# 基础设置
 home: 首页
 archives: 归档
 tags: 标签
@@ -6,21 +6,7 @@ categories: 分类
 search: 搜索
 about: 关于
 
-# Article
-read_more: 阅读全文
-share_on: 分享到
-author: 作者
-posted: 发表于
-updated: 更新于
-license: 许可协议
-
-# Comments
-comments: 评论
-
-# Other
-powered_by: 由 %s 强力驱动
-
-# Navigation Tabs (这是导航栏的关键！)
+# 导航栏（关键）
 tabs:
   - title: 首页
     url: /
@@ -34,3 +20,17 @@ tabs:
     url: /about/
   - title: 后台
     url: /admin/
+
+# 文章
+read_more: 阅读全文
+share_on: 分享到
+author: 作者
+posted: 发表于
+updated: 更新于
+license: 许可协议
+
+# 评论
+comments: 评论
+
+# 页脚
+powered_by: 由 %s 强力驱动
