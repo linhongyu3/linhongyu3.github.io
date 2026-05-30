@@ -1,7 +1,5 @@
 ---
-layout: page
-title: 标签
+layout: tags
 icon: fas fa-tags
 order: 4
-permalink: /tags/
 ---
