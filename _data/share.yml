@@ -2,10 +2,6 @@
 #  Icons from <https://fontawesome.com/>
 
 platforms:
-  - type: bilibili
-    icon: "fas fa-tv"
-    link: "https://space.bilibili.com/3546575265597760"
-
   - type: Facebook
     icon: "fab fa-facebook-square"
     link: "https://www.facebook.com/sharer/sharer.php?title=TITLE&u=URL"
