@@ -4,7 +4,8 @@
   icon: "fab fa-github"
 
 - type: bilibili
-  icon: "fas fa-tv"
+  icon: "fab fa-bilibili"
+  url: "https://space.bilibili.com/YOUR_BILIBILI_ID"  # TODO: 替换为真实的B站主页链接
 
 - type: email
   icon: "fas fa-envelope"
