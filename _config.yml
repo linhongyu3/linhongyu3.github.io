@@ -173,14 +173,12 @@ collections:
 
 defaults:
   - scope:
-      path: "" # An empty string here means all files in the project
+      path: "" # 所有文件
       type: posts
     values:
       layout: post
-      comments: true # Enable comments in posts.
-      toc: true # Display TOC column in posts.
-      # DO NOT modify the following parameter unless you are confident enough
-      # to update the code of all other post links in this project.
+      comments: true
+      toc: true
       permalink: /posts/:title/
   - scope:
       path: _drafts
@@ -188,10 +186,10 @@ defaults:
       comments: false
   - scope:
       path: ""
-      type: tabs # see `site.collections`
+      type: tabs # 导航栏集合
     values:
       layout: page
-      permalink: /posts/:title/
+      permalink: /:name/  # ✅ 关键修正：导航页直接放在根目录（如 /about/、/admin/）
 
 sass:
   style: compressed
