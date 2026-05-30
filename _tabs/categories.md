@@ -1,5 +1,6 @@
 ---
-layout: categories
-icon: fas fa-stream
-order: 1
+layout: page
+title: 分类
+order: 3
+permalink: /categories/
 ---
