@@ -1,10 +1,21 @@
-<!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8" />
-  <title>后台</title>
-</head>
-<body>
-  <script src="https://unpkg.com/@sveltia/cms@latest/dist/sveltia-cms.js"></script>
-</body>
-</html>
+backend:
+  name: github
+  repo: linhongyu3/linhongyu3.github.io
+  branch: main
+  base_url: https://linhongyu3.github.io
+
+media_folder: "assets/img/uploads"
+public_folder: "/assets/img/uploads"
+
+collections:
+  - name: posts
+    label: "文章"
+    folder: "_posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { name: title, label: "标题", widget: text }
+      - { name: date, label: "日期", widget: datetime, default: "", format: "yyyy-MM-dd HH:mm:ss Z" }
+      - { name: categories, label: "分类", widget: select, options: [技术, 折腾, 生活], default: 技术 }
+      - { name: tags, label: "标签", widget: list }
+      - { name: body, label: "正文", widget: markdown }
