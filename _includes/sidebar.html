@@ -25,9 +25,9 @@
         </li>
         <!-- .nav-item -->
       {% endfor %}
-      <!-- admin (external link to standalone Sveltia CMS) -->
+      <!-- admin (standalone Sveltia CMS) -->
       <li class="nav-item">
-        <a href="https://linhongyu3.github.io/admin/" class="nav-link" target="_blank" rel="noopener noreferrer">
+        <a href="{{ '/admin/' | relative_url }}" class="nav-link">
           <i class="fa-fw fas fa-cog"></i>
           <span>{{ site.data.locales[include.lang].tabs.admin | default: "后台" | upcase }}</span>
         </a>
