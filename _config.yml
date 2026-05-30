@@ -1,48 +1,26 @@
 # The Site Configuration
 
-# Import the themedefaults:
-  - scope:
-      path: ""
-      type: posts
-    values:
-      layout: post
-      comments: true
-      toc: true
-      permalink: /posts/:title/
-  - scope:
-      path: _drafts
-    values:
-      comments: false
-  # 移除任何针对 type: tabs 的 defaults（让 _tabs 文件自己控制 permalink）
 theme: jekyll-theme-chirpy
 
-# The language of the webpage › http://www.lingoes.net/en/translator/langcode.htm
-# If it has the same name as one of the files in folder `_data/locales`, the layout language will also be changed,
-# otherwise, the layout language will use the default value of 'en'.
+# The language of the webpage
 lang: zh-CN
 
-# Change to your timezone › https://zones.arilyn.cc
-timezone:
+# Change to your timezone
+timezone: Asia/Shanghai
 
-# jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
-# ↓ --------------------------
+# jekyll-seo-tag settings
+title: lhy的笔记
+tagline: 个人技术笔记与分享
+description: >-
+  lhy的个人博客，记录技术学习笔记与生活感悟。
 
-title: lhy的笔记 # the main title
-
-tagline: A text-focused Jekyll theme # it will display as the subtitle
-
-description: >- # used by seo meta and the atom feed
-  A minimal, responsive and feature-rich Jekyll theme for technical writing.
-
-# Fill in the protocol & hostname for your site.
-# E.g. 'https://linhongyu3.github.io', note that it does not end with a '/'.
 url: "https://linhongyu3.github.io"
 
 github:
-  username: linhongyu3 # change to your GitHub username
+  username: linhongyu3
 
 bilibili:
-  username: "3546575265597760" # change to your bilibili username
+  username: "3546575265597760"
 
 social:
   name: linhongyu3
@@ -52,105 +30,75 @@ social:
 
 # Site Verification Settings
 webmaster_verifications:
-  google: # fill in your Google verification code
-  bing: # fill in your Bing verification code
-  alexa: # fill in your Alexa verification code
-  yandex: # fill in your Yandex verification code
-  baidu: # fill in your Baidu verification code
-
-# ↑ --------------------------
-# The end of `jekyll-seo-tag` settings
+  google:
+  bing:
+  baidu:
 
 # Web Analytics Settings
 analytics:
   google:
-    id: # fill in your Google Analytics ID
+    id:
   goatcounter:
-    id: # fill in your GoatCounter ID
+    id:
   umami:
-    id: # fill in your Umami ID
-    domain: # fill in your Umami domain
+    id:
+    domain:
   matomo:
-    id: # fill in your Matomo ID
-    domain: # fill in your Matomo domain
+    id:
+    domain:
   cloudflare:
-    id: # fill in your Cloudflare Web Analytics token
+    id:
   fathom:
-    id: # fill in your Fathom Site ID
+    id:
 
 # Page views settings
 pageviews:
-  provider: # now only supports 'goatcounter'
+  provider:
 
 # Prefer color scheme setting.
-#
-# Note: Keep empty will follow the system prefer color by ,
-# and there will be a toggle to switch the theme between dark and light
-# on the bottom left of the sidebar.
-#
-# Available options:
-#
-#     light — Use the light color scheme
-#     dark — Use the dark color scheme
-#
-theme_mode: # [light | dark]
+theme_mode:
 
 # The CDN endpoint for media resources.
-# Notice that once it is assigned, the CDN url
-# will be added to all media resources (site avatar, posts' images, audio and video files) paths starting with '/'
-#
-# e.g. 'https://cdn.com'
 cdn:
 
 # the avatar on sidebar, support local or CORS resources
 avatar:
 
-# The URL of the site-wide social preview image used in SEO `og:image` meta tag.
-# It can be overridden by a customized `page.image` in front matter.
-social_preview_image: # string, local or CORS resources
+# The URL of the site-wide social preview image used in SEO og:image meta tag.
+social_preview_image:
 
 # boolean type, the global switch for TOC in posts.
 toc: true
 
 comments:
-  # Global switch for the post-comment system. Keeping it empty means disabled.
-  provider: # [disqus | utterances | giscus]
-  # The provider options are as follows:
+  provider:
   disqus:
-    shortname: lhy # fill with the Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
-  # utterances settings › https://utteranc.es/
+    shortname: lhy
   utterances:
-    repo: # <gh-username>/<repo>
-    issue_term: # < url | pathname | title | ...>
-  # Giscus options › https://giscus.app
+    repo:
+    issue_term:
   giscus:
-    repo: # <gh-username>/<repo>
+    repo:
     repo_id:
     category:
     category_id:
-    mapping: # optional,  to 'pathname'
-    strict: # optional,  to '0'
-    input_position: # optional,  to 'bottom'
-    lang: # optional,  to the value of `site.lang`
-    reactions_enabled: # optional,  to the value of `1`
+    mapping:
+    strict:
+    input_position:
+    lang:
+    reactions_enabled:
 
-# Self-hosted static assets, optional › https://github.com/cotes2020/chirpy-static-assets
+# Self-hosted static assets, optional
 assets:
   self_host:
-    enabled: # boolean, keep empty means false
-    # specify the Jekyll environment, empty means both
-    # only works if `assets.self_host.enabled` is 'true'
-    env: # [development | production]
+    enabled:
+    env:
 
 pwa:
-  enabled: true # The option for PWA feature (installable)
+  enabled: true
   cache:
-    enabled: true # The option for PWA offline cache
-    # Paths defined here will be excluded from the PWA cache.
-    # Usually its value is the `baseurl` of another website that
-    # shares the same domain name as the current website.
+    enabled: true
     deny_paths:
-      # - "/example"  # URLs match `<SITE_URL>/example/*` will not be cached by the PWA
 
 paginate: 10
 
@@ -158,13 +106,11 @@ paginate: 10
 baseurl: ""
 
 # ------------ The following options are not recommended to be modified ------------------
-
 kramdown:
   footnote_backlink: "&#8617;&#xfe0e;"
   syntax_highlighter: rouge
-  syntax_highlighter_opts: # Rouge Options › https://github.com/jneen/rouge#full-options
+  syntax_highlighter_opts:
     css_class: highlight
-    # _lang: console
     span:
       line_numbers: false
     block:
@@ -189,7 +135,6 @@ defaults:
       path: _drafts
     values:
       comments: false
-  # 移除任何针对 type: tabs 的 defaults（让 _tabs 文件自己控制 permalink）
 
 sass:
   style: compressed
@@ -213,6 +158,7 @@ exclude:
   - purgecss.js
   - "*.config.js"
   - "package*.json"
+
 include:
   - admin
 
@@ -224,8 +170,7 @@ jekyll-archives:
   permalinks:
     tag: /tags/:name/
     category: /categories/:name/
+
 tag_archive:
   type: liquid
   path: tags.html
-# 禁用主题自动添加的 HOME 按钮（避免与 _tabs/index.md 重复）
-nav_skip_home: true

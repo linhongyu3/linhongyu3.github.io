@@ -1,6 +1,6 @@
 ---
 title: Hello World!
-date: yyyy-05-Sa 11:45:00 +08:00
+date: 2026-05-30 11:45:00 +0800
 categories: 技术
 tags:
   - Hello World!
