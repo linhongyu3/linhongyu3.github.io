@@ -219,4 +219,5 @@ jekyll-archives:
 tag_archive:
   type: liquid
   path: tags.html
-
+# 禁用主题自动添加的 HOME 按钮（避免与 _tabs/index.md 重复）
+nav_skip_home: true
