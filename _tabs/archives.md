@@ -1,5 +1,6 @@
 ---
-layout: archives
-icon: fas fa-archive
-order: 3
+layout: page
+title: 归档
+order: 2
+permalink: /archives/
 ---
