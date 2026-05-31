@@ -1,0 +1,57 @@
+---
+layout: page
+---
+
+<div class="downloads-container">
+  {%- assign cdn_prefix = site.data.downloads.cdn_prefix | default: "" -%}
+  {%- assign items = site.data.downloads.items -%}
+  
+  {% if items and items.size > 0 %}
+    <div class="download-list">
+      {% for item in items %}
+        <div class="download-item card mb-4">
+          <div class="card-body">
+            <h3 class="card-title">{{ item.name }}</h3>
+            {% if item.description %}
+              <p class="card-text text-muted">{{ item.description }}</p>
+            {% endif %}
+            <div class="download-meta mb-3">
+              {% if item.version %}
+                <span class="badge bg-secondary me-2">版本: {{ item.version }}</span>
+              {% endif %}
+              {% if item.size %}
+                <span class="badge bg-info me-2">大小: {{ item.size }}</span>
+              {% endif %}
+              {% if item.date %}
+                <span class="badge bg-light text-dark">日期: {{ item.date }}</span>
+              {% endif %}
+            </div>
+            {%- assign download_url = item.url -%}
+            {%- if cdn_prefix != "" and item.url contains "github.com" -%}
+              {%- assign download_url = item.url | replace: "https://github.com", cdn_prefix -%}
+            {%- endif -%}
+            <a href="{{ download_url }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+              <i class="fas fa-download"></i> 下载
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle"></i> 暂无下载内容
+    </div>
+  {% endif %}
+</div>
+
+<style>
+.downloads-container {
+  margin-top: 1rem;
+}
+.download-item .card-title {
+  margin-bottom: 0.5rem;
+}
+.download-meta .badge {
+  font-size: 0.85em;
+}
+</style>

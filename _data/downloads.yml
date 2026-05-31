@@ -1,0 +1,14 @@
+# 下载列表
+# GitHub 链接会自动添加加速前缀
+
+# 加速前缀配置（留空则不加速）
+cdn_prefix: ""
+
+# 下载项列表
+items:
+  - name: "示例文件"
+    description: "这是一个示例下载项，请在后台修改或删除"
+    url: "https://github.com/example/repo/releases/download/v1.0/example.zip"
+    size: "1.0 MB"
+    version: "v1.0"
+    date: "2024-01-01"
