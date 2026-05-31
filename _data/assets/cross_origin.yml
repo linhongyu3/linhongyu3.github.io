@@ -1,9 +1,38 @@
 # CDNs for China optimization
 # Using domestic mirrors for better access speed in China
 
+# 国内 CDN 镜像配置（按优先级排序）
 cdns:
+  # 1. 知乎镜像 - 国内访问快
+  - url: https://unpkg.zhimg.com
+    name: "知乎 NPM 镜像"
+  
+  # 2. 淘宝镜像 - 稳定可靠
+  - url: https://registry.npmmirror.com
+    name: "淘宝 NPM 镜像"
+  
+  # 3. 七牛云镜像
+  - url: https://cdn.staticfile.org
+    name: "七牛云 CDN"
+  
+  # 4.  BootCDN
+  - url: https://cdn.bootcdn.net/ajax/libs
+    name: "BootCDN"
+  
+  # 5. JSDelivr GCore 镜像（国内友好）
   - url: https://gcore.jsdelivr.net/npm
-    # JSDelivr GCore mirror (better for China)
+    name: "JSDelivr GCore"
+  
+  # 6. 备用：官方源（前面都失败时使用）
+  - url: https://unpkg.com
+    name: "UNPKG 官方"
 
+# Google Fonts 国内替代方案
+# 如需使用，可取消注释以下配置
 # fonts:
-#   Google Fonts is blocked in China, using system fonts instead
+#   # 国内 Google Fonts 镜像
+#   - url: https://fonts.loli.net
+#     name: "Google Fonts 国内镜像"
+#   
+#   - url: https://fonts.proxy.ustclug.org
+#     name: "中科大 Google Fonts 镜像"
