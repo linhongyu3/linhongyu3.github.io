@@ -9,30 +9,25 @@ layout: page
   {% if items and items.size > 0 %}
     <div class="download-list">
       {% for item in items %}
-        <div class="download-item card mb-4">
+        {%- assign item_index = forloop.index0 -%}
+        <div class="download-item card mb-4" data-index="{{ item_index }}" data-url="{{ item.url }}">
           <div class="card-body">
             <h3 class="card-title">{{ item.name }}</h3>
             {% if item.description %}
               <p class="card-text text-muted">{{ item.description }}</p>
             {% endif %}
             <div class="download-meta mb-3">
-              {% if item.version %}
-                <span class="badge bg-secondary me-2">版本: {{ item.version }}</span>
-              {% endif %}
-              {% if item.size %}
-                <span class="badge bg-info me-2">大小: {{ item.size }}</span>
-              {% endif %}
-              {% if item.date %}
-                <span class="badge bg-light text-dark">日期: {{ item.date }}</span>
-              {% endif %}
+              <span class="badge bg-secondary me-2 version-badge">版本: {{ item.version }}</span>
+              <span class="badge bg-info me-2 size-badge">大小: {{ item.size }}</span>
+              <span class="badge bg-light text-dark date-badge">日期: {{ item.date }}</span>
             </div>
-            {%- assign download_url = item.url -%}
-            {%- if cdn_prefix != "" and item.url contains "github.com" -%}
-              {%- assign download_url = item.url | replace: "https://github.com", cdn_prefix -%}
-            {%- endif -%}
-            <a href="{{ download_url }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+            {%- assign download_url = cdn_prefix | append: item.url -%}
+            <a href="{{ download_url }}" class="btn btn-primary download-btn" target="_blank" rel="noopener noreferrer">
               <i class="fas fa-download"></i> 下载
             </a>
+            <span class="checking-update ms-2" style="display:none;">
+              <i class="fas fa-sync fa-spin"></i> 检查更新中...
+            </span>
           </div>
         </div>
       {% endfor %}
@@ -54,4 +49,105 @@ layout: page
 .download-meta .badge {
   font-size: 0.85em;
 }
+.new-version {
+  animation: pulse 1s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
 </style>
+
+<script>
+(function() {
+  const cdnPrefix = "{{ cdn_prefix }}";
+  
+  // 从 URL 解析 GitHub 仓库信息
+  function parseGitHubUrl(url) {
+    const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)\/releases\/download\/([^\/]+)\/(.+)/);
+    if (!match) return null;
+    return {
+      owner: match[1],
+      repo: match[2],
+      tag: match[3],
+      asset: match[4]
+    };
+  }
+  
+  // 获取最新 release
+  async function getLatestRelease(owner, repo) {
+    const url = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
+    const res = await fetch(url, { 
+      headers: { 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!res.ok) throw new Error('Failed to fetch');
+    return await res.json();
+  }
+  
+  // 格式化大小
+  function formatSize(bytes) {
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + 'KB';
+    if (bytes < 1024 * 1024 * 1024) return (bytes / 1024 / 1024).toFixed(1) + 'MB';
+    return (bytes / 1024 / 1024 / 1024).toFixed(1) + 'GB';
+  }
+  
+  // 检查更新
+  async function checkForUpdates() {
+    const items = document.querySelectorAll('.download-item');
+    
+    for (const item of items) {
+      const url = item.dataset.url;
+      const info = parseGitHubUrl(url);
+      if (!info) continue;
+      
+      const checking = item.querySelector('.checking-update');
+      if (checking) checking.style.display = 'inline';
+      
+      try {
+        const release = await getLatestRelease(info.owner, info.repo);
+        const latestTag = release.tag_name;
+        
+        if (latestTag !== info.tag) {
+          // 有新版本
+          const versionBadge = item.querySelector('.version-badge');
+          const sizeBadge = item.querySelector('.size-badge');
+          const dateBadge = item.querySelector('.date-badge');
+          const downloadBtn = item.querySelector('.download-btn');
+          
+          // 查找匹配的 asset
+          const newAsset = release.assets.find(a => 
+            a.name.includes(info.asset.split('_')[0]) || 
+            a.name.endsWith('.exe') || 
+            a.name.endsWith('.zip')
+          );
+          
+          if (newAsset) {
+            const newUrl = newAsset.browser_download_url;
+            const downloadUrl = cdnPrefix + newUrl;
+            
+            versionBadge.textContent = `版本: ${latestTag} (新)`;
+            versionBadge.classList.add('new-version', 'bg-success');
+            versionBadge.classList.remove('bg-secondary');
+            
+            sizeBadge.textContent = `大小: ${formatSize(newAsset.size)}`;
+            dateBadge.textContent = `日期: ${new Date(release.published_at).toLocaleDateString('zh-CN')}`;
+            
+            downloadBtn.href = downloadUrl;
+          }
+        }
+      } catch (e) {
+        console.log('检查更新失败:', e.message);
+      }
+      
+      if (checking) checking.style.display = 'none';
+    }
+  }
+  
+  // 页面加载后检查更新
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkForUpdates);
+  } else {
+    checkForUpdates();
+  }
+})();
+</script>
