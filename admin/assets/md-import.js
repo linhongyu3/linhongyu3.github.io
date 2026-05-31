@@ -1,98 +1,141 @@
 /**
  * Sveltia CMS 自定义插件：Markdown 文件导入
- * 在编辑器顶部添加"导入 Markdown"按钮
+ * 在编辑器页面注入"导入 Markdown"按钮
  */
 (function () {
   'use strict';
 
-  const LABEL = '导入 Markdown';
-  const ACCEPT = '.md,.markdown,.txt,.text';
+  const BTN_ID = 'md-import-btn';
 
-  function waitForEditor() {
-    const selector = 'sveltia-cms-editor-content';
-    return new Promise((resolve) => {
-      const el = document.querySelector(selector);
-      if (el) return resolve(el);
-      const observer = new MutationObserver(() => {
-        const el = document.querySelector(selector);
-        if (el) {
-          observer.disconnect();
-          resolve(el);
-        }
-      });
-      observer.observe(document.body, { childList: true, subtree: true });
+  function createImportButton() {
+    if (document.getElementById(BTN_ID)) return;
+
+    const btn = document.createElement('button');
+    btn.id = BTN_ID;
+    btn.textContent = '📄 导入 Markdown';
+    btn.title = '选择 .md 文件导入到编辑器';
+    btn.style.cssText = `
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 8px 16px; margin: 8px;
+      font-size: 14px; font-weight: 500;
+      color: #fff; background: #4285f4; border: none; border-radius: 6px;
+      cursor: pointer; white-space: nowrap; z-index: 9999;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    `;
+    btn.addEventListener('mouseenter', () => (btn.style.background = '#3367d6'));
+    btn.addEventListener('mouseleave', () => (btn.style.background = '#4285f4'));
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.md,.markdown,.txt,.text';
+    input.style.display = 'none';
+
+    input.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const content = ev.target.result;
+        setEditorContent(content);
+      };
+      reader.readAsText(file);
+      input.value = '';
     });
+
+    btn.addEventListener('click', () => input.click());
+    return btn;
+  }
+
+  function setEditorContent(content) {
+    // 方式1: CodeMirror 实例
+    const cmEl = document.querySelector('.CodeMirror');
+    if (cmEl && cmEl.CodeMirror) {
+      cmEl.CodeMirror.setValue(content);
+      return;
+    }
+
+    // 方式2: textarea
+    const textarea = document.querySelector('textarea[name="body"], textarea');
+    if (textarea) {
+      textarea.value = content;
+      textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      return;
+    }
+
+    // 方式3: contenteditable
+    const editable = document.querySelector('[contenteditable="true"]');
+    if (editable) {
+      editable.innerText = content;
+      editable.dispatchEvent(new Event('input', { bubbles: true }));
+      return;
+    }
+
+    // 方式4: 所有 textarea
+    const allTextareas = document.querySelectorAll('textarea');
+    for (const ta of allTextareas) {
+      const nativeSetter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
+      nativeSetter.call(ta, content);
+      ta.dispatchEvent(new Event('input', { bubbles: true }));
+      ta.dispatchEvent(new Event('change', { bubbles: true }));
+    }
   }
 
   function injectButton() {
-    // 避免重复注入
-    if (document.getElementById('md-import-btn')) return;
+    if (document.getElementById(BTN_ID)) return;
 
-    waitForEditor().then((editorEl) => {
-      const toolbar = editorEl.querySelector('.editor-toolbar, [class*="toolbar"], [class*="header"]');
-      const container = toolbar || editorEl;
+    const btn = createImportButton();
 
-      const btn = document.createElement('button');
-      btn.id = 'md-import-btn';
-      btn.textContent = LABEL;
-      btn.title = '选择 .md 文件导入到编辑器';
-      btn.style.cssText = `
-        display: inline-flex; align-items: center; gap: 4px;
-        padding: 6px 14px; margin: 4px 8px;
-        font-size: 13px; font-weight: 500;
-        color: #fff; background: #4285f4; border: none; border-radius: 4px;
-        cursor: pointer; white-space: nowrap;
-      `;
-      btn.addEventListener('mouseenter', () => (btn.style.background = '#3367d6'));
-      btn.addEventListener('mouseleave', () => (btn.style.background = '#4285f4'));
+    const candidates = [
+      document.querySelector('.editor-container'),
+      document.querySelector('[class*="editor"]'),
+      document.querySelector('[class*="Editor"]'),
+      document.querySelector('header'),
+      document.querySelector('nav'),
+      document.querySelector('main'),
+      document.querySelector('#root'),
+      document.querySelector('body'),
+    ];
 
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = ACCEPT;
-      input.style.display = 'none';
-      input.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          const content = ev.target.result;
-          // 尝试找到 CodeMirror 或 textarea 编辑器实例
-          const cm =
-            editorEl.querySelector('.CodeMirror') ||
-            editorEl.querySelector('textarea') ||
-            editorEl.querySelector('[contenteditable="true"]');
-          if (cm && cm.CodeMirror) {
-            cm.CodeMirror.setValue(content);
-          } else if (cm && cm.tagName === 'TEXTAREA') {
-            cm.value = content;
-            cm.dispatchEvent(new Event('input', { bubbles: true }));
-          } else if (cm && cm.contentEditable === 'true') {
-            cm.innerText = content;
-            cm.dispatchEvent(new Event('input', { bubbles: true }));
-          }
-        };
-        reader.readAsText(file);
-        input.value = '';
-      });
-
-      btn.addEventListener('click', () => input.click());
-      container.prepend(btn);
-    });
+    for (const container of candidates) {
+      if (container) {
+        container.prepend(btn);
+        return;
+      }
+    }
   }
 
-  // 页面加载后注入
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => setTimeout(injectButton, 1500));
-  } else {
-    setTimeout(injectButton, 1500);
+  function tryInject() {
+    const isEditorPage =
+      location.href.includes('/edit/') ||
+      location.href.includes('/new/') ||
+      document.querySelector('.CodeMirror') ||
+      document.querySelector('textarea') ||
+      document.querySelector('[class*="editor"]');
+
+    if (isEditorPage || document.querySelector('#root')) {
+      injectButton();
+    }
   }
 
-  // 路由切换时重新注入
+  setTimeout(tryInject, 2000);
+  setTimeout(tryInject, 4000);
+  setTimeout(tryInject, 6000);
+
   let lastUrl = location.href;
   setInterval(() => {
     if (location.href !== lastUrl) {
       lastUrl = location.href;
-      setTimeout(injectButton, 1500);
+      const old = document.getElementById(BTN_ID);
+      if (old) old.remove();
+      setTimeout(injectButton, 2000);
     }
-  }, 1000);
+  }, 800);
+
+  const observer = new MutationObserver(() => {
+    if (!document.getElementById(BTN_ID)) {
+      tryInject();
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+  setTimeout(() => observer.disconnect(), 15000);
 })();
