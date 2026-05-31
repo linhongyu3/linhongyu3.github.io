@@ -1,14 +1,8 @@
-# 下载列表
-# GitHub 链接会自动添加加速前缀
-
-# 加速前缀配置（留空则不加速）
-cdn_prefix: ""
-
-# 下载项列表
+cdn_prefix: https://v6.gh-proxy.org/
 items:
-  - name: "示例文件"
-    description: "这是一个示例下载项，请在后台修改或删除"
-    url: "https://github.com/example/repo/releases/download/v1.0/example.zip"
-    size: "1.0 MB"
-    version: "v1.0"
-    date: "2024-01-01"
+  - name: ClassRoomControl
+    description: 自制：教师大屏控制平台
+    url: https://github.com/linhongyu3/ClassRoomControl/releases
+    size: 55.8MB
+    version: v1.0.3
+    date: 2026-5-31
