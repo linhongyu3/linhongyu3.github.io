@@ -24,7 +24,10 @@ collections:
 
   - name: downloads
     label: 下载管理
-    file: _data/downloads.yml
+    files:
+      - label: "下载配置"
+        name: "downloads"
+        file: _data/downloads.yml
     fields:
       - {name: cdn_prefix, label: GitHub加速前缀, widget: string, hint: "例如: https://mirror.example.com，留空则不加速"}
       - label: 下载列表
