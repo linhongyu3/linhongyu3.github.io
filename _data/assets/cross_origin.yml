@@ -1,0 +1,9 @@
+# CDNs for China optimization
+# Using domestic mirrors for better access speed in China
+
+cdns:
+  - url: https://gcore.jsdelivr.net/npm
+    # JSDelivr GCore mirror (better for China)
+
+# fonts:
+#   Google Fonts is blocked in China, using system fonts instead
