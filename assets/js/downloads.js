@@ -1,6 +1,9 @@
 (function() {
   'use strict';
   
+  // 测试标记：验证脚本是否执行
+  document.documentElement.setAttribute('data-downloads-js', 'loaded');
+  
   function initDownloads() {
     var mirrorSelect = document.getElementById('mirror-select');
     var filterBtns = document.querySelectorAll('.filter-btn');
