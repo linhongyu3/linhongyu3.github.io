@@ -43,7 +43,8 @@ layout: page
       {%- assign item_index = forloop.index0 -%}
       <div class="download-item card mb-3" 
            data-index="{{ item_index }}" 
-           data-category="{{ item.category | default: 'self-made' }}">
+           data-category="{{ item.category | default: 'self-made' }}"
+           data-filtered="true">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start">
             <div>
