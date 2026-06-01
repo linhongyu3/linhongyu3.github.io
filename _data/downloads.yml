@@ -1,7 +1,25 @@
-cdn_prefix: https://v6.gh-proxy.org/
+# 多个加速源配置
+mirrors:
+  - name: "gh-proxy v6"
+    url: "https://v6.gh-proxy.org/"
+  - name: "gh-proxy v1"
+    url: "https://v1.gh-proxy.org/"
+  - name: "ghproxy"
+    url: "https://ghproxy.com/"
+  - name: "mirror.ghproxy"
+    url: "https://mirror.ghproxy.com/"
+  - name: "moeyy"
+    url: "https://gh.api.99988866.xyz/"
+
+# 默认加速源（默认启用加速）
+default_mirror: "gh-proxy v6"
+
+# 下载项分类
 items:
+  # 自制软件
   - name: ClassRoomControl
-    description: 自制：教师大屏控制平台
+    description: 教师大屏控制平台
+    category: self-made
     url: https://github.com/linhongyu3/ClassRoomControl/releases/download/v1.0.3-fix/ClassRoomHelper_setup_1.0.3.exe
     size: 55.8MB
     version: v1.0.3

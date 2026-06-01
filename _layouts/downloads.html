@@ -3,26 +3,64 @@ layout: page
 ---
 
 <div class="downloads-container">
-  {%- assign cdn_prefix = site.data.downloads.cdn_prefix | default: "" -%}
+  {%- assign mirrors = site.data.downloads.mirrors -%}
+  {%- assign default_mirror = site.data.downloads.default_mirror -%}
   {%- assign items = site.data.downloads.items -%}
   
-  {% if items and items.size > 0 %}
-    <div class="download-list">
-      {% for item in items %}
+  <!-- 控制面板 -->
+  <div class="control-panel card mb-4">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col-md-6 mb-2 mb-md-0">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="use-mirror" checked>
+            <label class="form-check-label" for="use-mirror">
+              <i class="fas fa-rocket"></i> 启用加速下载
+            </label>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-server"></i></span>
+            <select class="form-select" id="mirror-select">
+              {% for mirror in mirrors %}
+                <option value="{{ mirror.url }}" {% if mirror.name == default_mirror %}selected{% endif %}>
+                  {{ mirror.name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 自制软件 -->
+  {%- assign self_made = items | where: "category", "self-made" -%}
+  {% if self_made.size > 0 %}
+    <h3 class="category-title">
+      <i class="fas fa-code"></i> 自制软件
+    </h3>
+    <div class="download-list mb-5">
+      {% for item in self_made %}
         {%- assign item_index = forloop.index0 -%}
-        <div class="download-item card mb-4" data-index="{{ item_index }}" data-url="{{ item.url }}">
+        <div class="download-item card mb-3" data-index="{{ item_index }}" data-url="{{ item.url }}">
           <div class="card-body">
-            <h3 class="card-title">{{ item.name }}</h3>
-            {% if item.description %}
-              <p class="card-text text-muted">{{ item.description }}</p>
-            {% endif %}
-            <div class="download-meta mb-3">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h4 class="card-title">{{ item.name }}</h4>
+                {% if item.description %}
+                  <p class="card-text text-muted">{{ item.description }}</p>
+                {% endif %}
+              </div>
+              <span class="badge bg-primary">自制</span>
+            </div>
+            <div class="download-meta mb-3 mt-2">
               <span class="badge bg-secondary me-2 version-badge">版本: {{ item.version }}</span>
               <span class="badge bg-info me-2 size-badge">大小: {{ item.size }}</span>
               <span class="badge bg-light text-dark date-badge">日期: {{ item.date }}</span>
             </div>
-            {%- assign download_url = cdn_prefix | append: item.url -%}
-            <a href="{{ download_url }}" class="btn btn-primary download-btn" target="_blank" rel="noopener noreferrer">
+            <a href="{{ item.url }}" class="btn btn-primary download-btn" target="_blank" rel="noopener noreferrer">
               <i class="fas fa-download"></i> 下载
             </a>
             <span class="checking-update ms-2" style="display:none;">
@@ -32,7 +70,46 @@ layout: page
         </div>
       {% endfor %}
     </div>
-  {% else %}
+  {% endif %}
+  
+  <!-- 转载软件 -->
+  {%- assign repost = items | where: "category", "repost" -%}
+  {% if repost.size > 0 %}
+    <h3 class="category-title">
+      <i class="fas fa-share-alt"></i> 转载软件
+    </h3>
+    <div class="download-list mb-5">
+      {% for item in repost %}
+        {%- assign item_index = forloop.index0 -%}
+        <div class="download-item card mb-3" data-index="{{ item_index }}" data-url="{{ item.url }}">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h4 class="card-title">{{ item.name }}</h4>
+                {% if item.description %}
+                  <p class="card-text text-muted">{{ item.description }}</p>
+                {% endif %}
+              </div>
+              <span class="badge bg-secondary">转载</span>
+            </div>
+            <div class="download-meta mb-3 mt-2">
+              <span class="badge bg-secondary me-2 version-badge">版本: {{ item.version }}</span>
+              <span class="badge bg-info me-2 size-badge">大小: {{ item.size }}</span>
+              <span class="badge bg-light text-dark date-badge">日期: {{ item.date }}</span>
+            </div>
+            <a href="{{ item.url }}" class="btn btn-primary download-btn" target="_blank" rel="noopener noreferrer">
+              <i class="fas fa-download"></i> 下载
+            </a>
+            <span class="checking-update ms-2" style="display:none;">
+              <i class="fas fa-sync fa-spin"></i> 检查更新中...
+            </span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+  
+  {% if self_made.size == 0 and repost.size == 0 %}
     <div class="alert alert-info">
       <i class="fas fa-info-circle"></i> 暂无下载内容
     </div>
@@ -43,24 +120,101 @@ layout: page
 .downloads-container {
   margin-top: 1rem;
 }
+.control-panel {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+}
+.control-panel .card-body {
+  color: white;
+}
+.control-panel .form-check-label {
+  color: white;
+  font-weight: 500;
+}
+.control-panel .input-group-text {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+}
+.control-panel .form-select {
+  background: rgba(255,255,255,0.9);
+  border: none;
+}
+.category-title {
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+  color: #495057;
+}
+.category-title i {
+  margin-right: 0.5rem;
+  color: #4285f4;
+}
+.download-item {
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-left: 4px solid #4285f4;
+}
+.download-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
 .download-item .card-title {
   margin-bottom: 0.5rem;
+  color: #333;
 }
 .download-meta .badge {
   font-size: 0.85em;
 }
 .new-version {
-  animation: pulse 1s infinite;
+  animation: pulse 1.5s infinite;
 }
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.02); }
+}
+.form-switch .form-check-input {
+  width: 3em;
+  height: 1.5em;
+  cursor: pointer;
+}
+.form-switch .form-check-input:checked {
+  background-color: #28a745;
+  border-color: #28a745;
 }
 </style>
 
 <script>
 (function() {
-  const cdnPrefix = "{{ cdn_prefix }}";
+  const mirrorSelect = document.getElementById('mirror-select');
+  const useMirrorCheckbox = document.getElementById('use-mirror');
+  
+  // 更新所有下载链接
+  function updateDownloadLinks() {
+    const useMirror = useMirrorCheckbox.checked;
+    const mirrorUrl = mirrorSelect.value;
+    const buttons = document.querySelectorAll('.download-btn');
+    
+    buttons.forEach(btn => {
+      const item = btn.closest('.download-item');
+      const originalUrl = item.dataset.url;
+      
+      if (useMirror) {
+        btn.href = mirrorUrl + originalUrl;
+      } else {
+        btn.href = originalUrl;
+      }
+    });
+  }
+  
+  // 监听切换事件
+  mirrorSelect.addEventListener('change', updateDownloadLinks);
+  useMirrorCheckbox.addEventListener('change', function() {
+    mirrorSelect.disabled = !this.checked;
+    updateDownloadLinks();
+  });
+  
+  // 初始化
+  updateDownloadLinks();
   
   // 从 URL 解析 GitHub 仓库信息
   function parseGitHubUrl(url) {
@@ -108,13 +262,10 @@ layout: page
         const latestTag = release.tag_name;
         
         if (latestTag !== info.tag) {
-          // 有新版本
           const versionBadge = item.querySelector('.version-badge');
           const sizeBadge = item.querySelector('.size-badge');
           const dateBadge = item.querySelector('.date-badge');
-          const downloadBtn = item.querySelector('.download-btn');
           
-          // 查找匹配的 asset
           const newAsset = release.assets.find(a => 
             a.name.includes(info.asset.split('_')[0]) || 
             a.name.endsWith('.exe') || 
@@ -122,8 +273,8 @@ layout: page
           );
           
           if (newAsset) {
-            const newUrl = newAsset.browser_download_url;
-            const downloadUrl = cdnPrefix + newUrl;
+            item.dataset.url = newAsset.browser_download_url;
+            updateDownloadLinks();
             
             versionBadge.textContent = `版本: ${latestTag} (新)`;
             versionBadge.classList.add('new-version', 'bg-success');
@@ -131,8 +282,6 @@ layout: page
             
             sizeBadge.textContent = `大小: ${formatSize(newAsset.size)}`;
             dateBadge.textContent = `日期: ${new Date(release.published_at).toLocaleDateString('zh-CN')}`;
-            
-            downloadBtn.href = downloadUrl;
           }
         }
       } catch (e) {
