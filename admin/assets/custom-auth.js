@@ -7,58 +7,43 @@
   'use strict';
 
   function customizeAuthPage() {
-    // 查找登录容器
-    const authContainer = document.querySelector('[data-testid="auth-page"]') || 
-                          document.querySelector('.auth-container') ||
-                          document.querySelector('main');
-    
-    if (!authContainer) return;
-
-    // 隐藏 GitHub 登录按钮（多种选择器尝试）
-    const githubBtns = document.querySelectorAll(
-      '[data-testid="auth-button-github"], ' +
-      'button[data-provider="github"], ' +
-      '.auth-button-github, ' +
-      'button:contains("GitHub")'
-    );
-    githubBtns.forEach(function(btn) {
-      btn.style.display = 'none';
+    // 隐藏所有包含 "GitHub" 文字的按钮
+    var buttons = document.querySelectorAll('button');
+    buttons.forEach(function(btn) {
+      if (btn.textContent.indexOf('GitHub') !== -1) {
+        btn.style.display = 'none';
+      }
     });
 
-    // 查找 Token 输入区域
-    const tokenInput = document.querySelector('input[type="password"]') ||
-                       document.querySelector('input[name="token"]') ||
-                       document.querySelector('[data-testid="token-input"]');
-    
-    if (tokenInput && !document.getElementById('get-token-link')) {
-      // 创建获取 Token 链接
-      const link = document.createElement('a');
-      link.id = 'get-token-link';
-      link.href = 'https://github.com/settings/tokens/new?description=Sveltia%20CMS&scopes=repo';
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.textContent = '→ 没有 Token？点击获取';
-      link.style.cssText = 'display: block; margin-top: 8px; color: #6c757d; font-size: 14px; text-decoration: none;';
-      link.onmouseenter = function() { this.style.color = '#495057'; };
-      link.onmouseleave = function() { this.style.color = '#6c757d'; };
-      
-      tokenInput.parentNode.appendChild(link);
-    }
+    // 查找 Token 相关区域，添加获取 Token 链接
+    var tokenBtn = document.querySelectorAll('button');
+    tokenBtn.forEach(function(btn) {
+      if (btn.textContent.indexOf('Access Token') !== -1 || btn.textContent.indexOf('Token') !== -1) {
+        var parent = btn.parentNode;
+        if (parent && !document.getElementById('get-token-link')) {
+          var link = document.createElement('a');
+          link.id = 'get-token-link';
+          link.href = 'https://github.com/settings/tokens/new?description=Sveltia%20CMS&scopes=repo';
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = '没有 Token？点击获取';
+          link.style.cssText = 'display: block; margin-top: 8px; color: #6c757d; font-size: 14px; text-decoration: none;';
+          link.onmouseenter = function() { this.style.color = '#495057'; };
+          link.onmouseleave = function() { this.style.color = '#6c757d'; };
+          parent.appendChild(link);
+        }
+      }
+    });
   }
 
-  // 页面加载后执行
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(customizeAuthPage, 1000);
-      setTimeout(customizeAuthPage, 2000);
-    });
-  } else {
-    setTimeout(customizeAuthPage, 1000);
-    setTimeout(customizeAuthPage, 2000);
-  }
+  // 多次尝试
+  var attempts = [1000, 2000, 3000, 5000];
+  attempts.forEach(function(delay) {
+    setTimeout(customizeAuthPage, delay);
+  });
 
   // 监听 DOM 变化
-  const observer = new MutationObserver(function() {
+  var observer = new MutationObserver(function() {
     customizeAuthPage();
   });
   
@@ -70,8 +55,5 @@
     });
   }
 
-  // 5秒后停止观察
-  setTimeout(function() {
-    observer.disconnect();
-  }, 10000);
+  setTimeout(function() { observer.disconnect(); }, 15000);
 })();
