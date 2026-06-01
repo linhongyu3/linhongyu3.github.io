@@ -56,7 +56,7 @@ layout: page
             {% if item.category == 'self-made' %}
               <span class="badge bg-secondary">自制</span>
             {% else %}
-              <span class="badge bg-light text-dark border">转载</span>
+              <span class="badge bg-secondary">转载</span>
             {% endif %}
           </div>
           
@@ -193,8 +193,8 @@ layout: page
   background: #f8f9fa;
 }
 
-/* 筛选隐藏 - 用内联 style 避免与主题冲突 */
-.download-item[data-filtered="false"] {
+/* 筛选隐藏 - 高优先级确保生效 */
+div.download-item[data-filtered="false"] {
   display: none !important;
 }
 
