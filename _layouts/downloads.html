@@ -9,13 +9,13 @@ layout: page
   
   <!-- 筛选按钮 -->
   <div class="filter-bar mb-4">
-    <button class="filter-btn active" data-filter="all">
+    <button class="filter-btn active" data-filter="all" type="button">
       <i class="fas fa-th-large"></i> 全部
     </button>
-    <button class="filter-btn" data-filter="self-made">
+    <button class="filter-btn" data-filter="self-made" type="button">
       <i class="fas fa-code"></i> 自制
     </button>
-    <button class="filter-btn" data-filter="repost">
+    <button class="filter-btn" data-filter="repost" type="button">
       <i class="fas fa-share-alt"></i> 转载
     </button>
   </div>
@@ -38,13 +38,12 @@ layout: page
   </div>
   
   <!-- 下载列表 -->
-  <div class="download-list">
+  <div class="download-list" id="download-list">
     {% for item in items %}
       {%- assign item_index = forloop.index0 -%}
       <div class="download-item card mb-3" 
-           data-index="{{ item_index }}" 
-           data-category="{{ item.category | default: 'self-made' }}"
-           data-filtered="true">
+           id="download-item-{{ item_index }}"
+           data-category="{{ item.category | default: 'self-made' }}">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start">
             <div>
@@ -53,11 +52,7 @@ layout: page
                 <p class="card-text text-muted mb-2">{{ item.description }}</p>
               {% endif %}
             </div>
-            {% if item.category == 'self-made' %}
-              <span class="badge bg-secondary">自制</span>
-            {% else %}
-              <span class="badge bg-secondary">转载</span>
-            {% endif %}
+            <span class="badge bg-secondary">{% if item.category == 'self-made' %}自制{% else %}转载{% endif %}</span>
           </div>
           
           <div class="download-meta mb-3">
@@ -69,7 +64,6 @@ layout: page
           <!-- 下载按钮组 -->
           <div class="download-actions">
             {% if item.links and item.links.size > 0 %}
-              <!-- 合集：多个下载链接 -->
               <div class="dropdown">
                 <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <i class="fas fa-download"></i> 选择版本下载
@@ -85,7 +79,6 @@ layout: page
                 </ul>
               </div>
             {% elsif item.url %}
-              <!-- 单个下载 -->
               <a href="{{ item.url }}" class="btn btn-outline-secondary btn-sm download-btn" data-original-url="{{ item.url }}" target="_blank" rel="noopener noreferrer">
                 <i class="fas fa-download"></i> 下载
               </a>
@@ -128,15 +121,18 @@ layout: page
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
 .filter-btn:hover {
   background: #f8f9fa;
   border-color: #adb5bd;
 }
 .filter-btn.active {
-  background: #e9ecef;
+  background: #6c757d;
   border-color: #6c757d;
-  color: #495057;
+  color: #fff;
 }
 .filter-btn i {
   margin-right: 0.25rem;
@@ -149,10 +145,6 @@ layout: page
 }
 .control-panel .form-select {
   border-color: #ced4da;
-}
-.control-panel .form-select:focus {
-  border-color: #adb5bd;
-  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.15);
 }
 
 /* 下载项 */
@@ -183,18 +175,9 @@ layout: page
   border-color: #adb5bd;
   color: #495057;
 }
-.download-actions .dropdown-menu {
-  border-color: #dee2e6;
-}
-.download-actions .dropdown-item {
-  color: #495057;
-}
-.download-actions .dropdown-item:hover {
-  background: #f8f9fa;
-}
 
-/* 筛选隐藏 - 高优先级确保生效 */
-div.download-item[data-filtered="false"] {
+/* 筛选隐藏 */
+.download-item.filtered-out {
   display: none !important;
 }
 
@@ -209,68 +192,83 @@ div.download-item[data-filtered="false"] {
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var mirrorSelect = document.getElementById('mirror-select');
-  var filterBtns = document.querySelectorAll('.filter-btn');
-  var downloadItems = document.querySelectorAll('.download-item');
+(function() {
+  'use strict';
   
-  // 筛选功能 - 使用 data-filtered 属性避免 CSS 冲突
-  filterBtns.forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var filter = this.getAttribute('data-filter');
-      
-      filterBtns.forEach(function(b) { b.classList.remove('active'); });
-      this.classList.add('active');
-      
+  function initDownloads() {
+    var mirrorSelect = document.getElementById('mirror-select');
+    var filterBtns = document.querySelectorAll('.filter-btn');
+    var downloadItems = document.querySelectorAll('.download-item');
+    
+    // 筛选功能
+    function applyFilter(filterType) {
       downloadItems.forEach(function(item) {
         var category = item.getAttribute('data-category') || 'self-made';
-        if (filter === 'all' || category === filter) {
-          item.setAttribute('data-filtered', 'true');
+        if (filterType === 'all' || category === filterType) {
+          item.classList.remove('filtered-out');
         } else {
-          item.setAttribute('data-filtered', 'false');
+          item.classList.add('filtered-out');
         }
       });
-    });
-  });
-  
-  // 更新下载链接（仅 GitHub 链接使用加速）
-  function updateDownloadLinks() {
-    var mirrorUrl = mirrorSelect ? mirrorSelect.value : '';
+    }
     
-    document.querySelectorAll('.download-btn').forEach(function(btn) {
-      var originalUrl = btn.getAttribute('data-original-url');
-      if (!originalUrl) return;
-      if (mirrorUrl && originalUrl.indexOf('github.com') !== -1) {
-        btn.href = mirrorUrl + originalUrl;
-      } else {
-        btn.href = originalUrl;
+    filterBtns.forEach(function(btn) {
+      // 同时支持 click 和 touch 事件
+      function handleFilter(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        var filter = btn.getAttribute('data-filter');
+        
+        // 更新按钮状态
+        filterBtns.forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        
+        // 应用筛选
+        applyFilter(filter);
       }
+      
+      btn.addEventListener('click', handleFilter);
+      btn.addEventListener('touchstart', handleFilter, {passive: false});
     });
     
-    document.querySelectorAll('.download-link').forEach(function(link) {
-      var originalUrl = link.getAttribute('data-original-url');
-      if (!originalUrl) return;
-      if (mirrorUrl && originalUrl.indexOf('github.com') !== -1) {
-        link.href = mirrorUrl + originalUrl;
-      } else {
-        link.href = originalUrl;
-      }
-    });
-  }
-  
-  if (mirrorSelect) {
-    mirrorSelect.addEventListener('change', updateDownloadLinks);
-    updateDownloadLinks();
-  }
-  
-  // 检查 GitHub Releases 更新
-  function parseGitHubUrl(url) {
-    var match = url.match(/github\.com\/([^\/]+)\/([^\/]+)\/releases\/download\/([^\/]+)\/(.+)/);
-    if (!match) return null;
-    return { owner: match[1], repo: match[2], tag: match[3], asset: match[4] };
-  }
-  
-  function checkForUpdates() {
+    // 更新下载链接
+    function updateDownloadLinks() {
+      var mirrorUrl = mirrorSelect ? mirrorSelect.value : '';
+      
+      document.querySelectorAll('.download-btn').forEach(function(btn) {
+        var originalUrl = btn.getAttribute('data-original-url');
+        if (!originalUrl) return;
+        if (mirrorUrl && originalUrl.indexOf('github.com') !== -1) {
+          btn.href = mirrorUrl + originalUrl;
+        } else {
+          btn.href = originalUrl;
+        }
+      });
+      
+      document.querySelectorAll('.download-link').forEach(function(link) {
+        var originalUrl = link.getAttribute('data-original-url');
+        if (!originalUrl) return;
+        if (mirrorUrl && originalUrl.indexOf('github.com') !== -1) {
+          link.href = mirrorUrl + originalUrl;
+        } else {
+          link.href = originalUrl;
+        }
+      });
+    }
+    
+    if (mirrorSelect) {
+      mirrorSelect.addEventListener('change', updateDownloadLinks);
+      updateDownloadLinks();
+    }
+    
+    // 检查更新
+    function parseGitHubUrl(url) {
+      var match = url.match(/github\.com\/([^\/]+)\/([^\/]+)\/releases\/download\/([^\/]+)\/(.+)/);
+      if (!match) return null;
+      return { owner: match[1], repo: match[2], tag: match[3] };
+    }
+    
     downloadItems.forEach(function(item) {
       var btn = item.querySelector('.download-btn') || item.querySelector('.download-link');
       if (!btn) return;
@@ -281,27 +279,30 @@ document.addEventListener('DOMContentLoaded', function() {
       var checking = item.querySelector('.checking-update');
       if (checking) checking.style.display = 'inline';
       
-      fetch('https://api.github.com/repos/' + info.owner + '/' + info.repo + '/releases/latest', {
-        headers: { 'Accept': 'application/vnd.github.v3+json' }
-      })
-      .then(function(res) { return res.json(); })
-      .then(function(release) {
-        if (release.tag_name && release.tag_name !== info.tag) {
-          var versionBadge = item.querySelector('.version-badge');
-          if (versionBadge) {
-            versionBadge.textContent = '版本: ' + release.tag_name + ' (新)';
-            versionBadge.classList.add('new-version', 'bg-success');
-            versionBadge.classList.remove('bg-light', 'text-secondary');
+      fetch('https://api.github.com/repos/' + info.owner + '/' + info.repo + '/releases/latest')
+        .then(function(res) { return res.json(); })
+        .then(function(release) {
+          if (release.tag_name && release.tag_name !== info.tag) {
+            var badge = item.querySelector('.version-badge');
+            if (badge) {
+              badge.textContent = '版本: ' + release.tag_name + ' (新)';
+              badge.classList.add('new-version', 'bg-success');
+              badge.classList.remove('bg-light', 'text-secondary');
+            }
           }
-        }
-      })
-      .catch(function() {})
-      .finally(function() {
-        if (checking) checking.style.display = 'none';
-      });
+        })
+        .catch(function() {})
+        .finally(function() {
+          if (checking) checking.style.display = 'none';
+        });
     });
   }
   
-  checkForUpdates();
-});
+  // DOM 加载完成后初始化
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDownloads);
+  } else {
+    initDownloads();
+  }
+})();
 </script>
