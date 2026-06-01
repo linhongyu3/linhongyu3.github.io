@@ -3,8 +3,8 @@ layout: page
 ---
 
 <div class="downloads-container">
-  {%- assign mirrors = site.data.downloads.mirrors -%}
-  {%- assign default_mirror = site.data.downloads.default_mirror -%}
+  {%- assign mirrors = site.data.mirrors.mirrors -%}
+  {%- assign default_mirror = site.data.mirrors.default_mirror -%}
   {%- assign items = site.data.downloads.items -%}
   
   <!-- 筛选按钮 -->
@@ -112,7 +112,7 @@ layout: page
   margin-top: 1rem;
 }
 
-/* 筛选按钮 - 简约灰白风格 */
+/* 筛选按钮 */
 .filter-bar {
   display: flex;
   gap: 0.5rem;
@@ -141,7 +141,7 @@ layout: page
   margin-right: 0.25rem;
 }
 
-/* 控制面板 - 简约风格 */
+/* 控制面板 */
 .control-panel {
   background: #f8f9fa;
   border: 1px solid #e9ecef;
@@ -172,7 +172,7 @@ layout: page
   font-weight: normal;
 }
 
-/* 下载按钮 - 简约灰白 */
+/* 下载按钮 */
 .download-actions .btn-outline-secondary {
   color: #6c757d;
   border-color: #ced4da;
@@ -192,8 +192,8 @@ layout: page
   background: #f8f9fa;
 }
 
-/* 隐藏元素 */
-.hidden {
+/* 筛选隐藏 - 用内联 style 避免与主题冲突 */
+.download-item[data-filtered="false"] {
   display: none !important;
 }
 
@@ -213,22 +213,20 @@ document.addEventListener('DOMContentLoaded', function() {
   var filterBtns = document.querySelectorAll('.filter-btn');
   var downloadItems = document.querySelectorAll('.download-item');
   
-  // 筛选功能
+  // 筛选功能 - 使用 data-filtered 属性避免 CSS 冲突
   filterBtns.forEach(function(btn) {
     btn.addEventListener('click', function() {
       var filter = this.getAttribute('data-filter');
       
-      // 更新按钮状态
       filterBtns.forEach(function(b) { b.classList.remove('active'); });
       this.classList.add('active');
       
-      // 筛选项目
       downloadItems.forEach(function(item) {
         var category = item.getAttribute('data-category') || 'self-made';
         if (filter === 'all' || category === filter) {
-          item.classList.remove('hidden');
+          item.setAttribute('data-filtered', 'true');
         } else {
-          item.classList.add('hidden');
+          item.setAttribute('data-filtered', 'false');
         }
       });
     });
@@ -238,12 +236,9 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateDownloadLinks() {
     var mirrorUrl = mirrorSelect ? mirrorSelect.value : '';
     
-    // 更新普通下载按钮
     document.querySelectorAll('.download-btn').forEach(function(btn) {
       var originalUrl = btn.getAttribute('data-original-url');
       if (!originalUrl) return;
-      
-      // 只有 GitHub 链接才使用加速
       if (mirrorUrl && originalUrl.indexOf('github.com') !== -1) {
         btn.href = mirrorUrl + originalUrl;
       } else {
@@ -251,11 +246,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    // 更新下拉菜单链接
     document.querySelectorAll('.download-link').forEach(function(link) {
       var originalUrl = link.getAttribute('data-original-url');
       if (!originalUrl) return;
-      
       if (mirrorUrl && originalUrl.indexOf('github.com') !== -1) {
         link.href = mirrorUrl + originalUrl;
       } else {
@@ -264,7 +257,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // 监听加速源切换
   if (mirrorSelect) {
     mirrorSelect.addEventListener('change', updateDownloadLinks);
     updateDownloadLinks();
@@ -274,19 +266,13 @@ document.addEventListener('DOMContentLoaded', function() {
   function parseGitHubUrl(url) {
     var match = url.match(/github\.com\/([^\/]+)\/([^\/]+)\/releases\/download\/([^\/]+)\/(.+)/);
     if (!match) return null;
-    return {
-      owner: match[1],
-      repo: match[2],
-      tag: match[3],
-      asset: match[4]
-    };
+    return { owner: match[1], repo: match[2], tag: match[3], asset: match[4] };
   }
   
   function checkForUpdates() {
     downloadItems.forEach(function(item) {
       var btn = item.querySelector('.download-btn') || item.querySelector('.download-link');
       if (!btn) return;
-      
       var url = btn.getAttribute('data-original-url');
       var info = parseGitHubUrl(url);
       if (!info) return;

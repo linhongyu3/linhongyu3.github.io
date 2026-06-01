@@ -1,0 +1,15 @@
+# 默认加速源
+default_mirror: "gh-proxy v6"
+
+# 加速源列表
+mirrors:
+  - name: "gh-proxy v6"
+    url: "https://v6.gh-proxy.org/"
+  - name: "gh-proxy v1"
+    url: "https://v1.gh-proxy.org/"
+  - name: "ghproxy"
+    url: "https://ghproxy.com/"
+  - name: "mirror.ghproxy"
+    url: "https://mirror.ghproxy.com/"
+  - name: "moeyy"
+    url: "https://gh.api.99988866.xyz/"

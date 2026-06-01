@@ -10,6 +10,7 @@ media_folder: assets/img/uploads
 public_folder: /assets/img/uploads
 
 collections:
+  # ========== 文章管理 ==========
   - name: posts
     label: 文章
     folder: _posts
@@ -39,50 +40,56 @@ collections:
         collapsed: false
         fields:
           - {name: title, label: 标题, widget: string, required: true}
-          - {name: date, label: 发布日期, widget: datetime, format: "yyyy-MM-dd HH:mm:ss Z", required: true}
+          - {name: date, label: 发布日期, widget: datetime, format: "yyyy-MM-dd HH:mm:ss Z", required: true, default: "{{now}}" }
           - {name: categories, label: 分类, widget: select, options: [技术, 折腾, 生活], default: 技术}
           - {name: tags, label: 标签, widget: list, hint: "按回车添加多个标签"}
       - label: 正文内容
         name: body
         widget: markdown
         required: true
-        hint: "支持 Markdown 语法，可使用工具栏插入图片、链接等"
+        hint: "支持 Markdown 语法，可使用工具栏插入图片、链接等，支持粘贴 Markdown 文稿"
 
-  - name: downloads
-    label: 下载管理
+  # ========== 下载管理 - 加速源配置 ==========
+  - name: mirrors
+    label: 下载管理 / 加速源
     files:
-      - label: "下载配置"
-        name: "downloads"
-        file: _data/downloads.yml
+      - label: "加速源配置"
+        name: "mirrors"
+        file: _data/mirrors.yml
         fields:
-          - label: 加速源配置
+          - {name: default_mirror, label: 默认加速源, widget: string, hint: "填写加速源名称，如 gh-proxy v6"}
+          - label: 加速源列表
             name: mirrors
             widget: list
             fields:
               - {name: name, label: 加速源名称, widget: string}
-              - {name: url, label: 加速源URL, widget: string, hint: "以 / 结尾"}
-          - {name: default_mirror, label: 默认加速源, widget: string, hint: "填写加速源名称"}
-          - label: 下载列表
+              - {name: url, label: 加速源URL, widget: string, hint: "以 / 结尾，如 https://v6.gh-proxy.org/"}
+
+  # ========== 下载管理 - 软件列表 ==========
+  - name: downloads
+    label: 下载管理 / 软件列表
+    files:
+      - label: "软件列表"
+        name: "downloads"
+        file: _data/downloads.yml
+        fields:
+          - label: 软件列表
             name: items
             widget: list
             fields:
               - {name: name, label: 软件名称, widget: string}
               - {name: description, label: 软件描述, widget: text, required: false}
               - {name: category, label: 分类, widget: select, options: [{label: 自制, value: self-made}, {label: 转载, value: repost}], default: self-made}
-              - label: 下载方式
-                name: download_type
-                widget: object
+              - {name: url, label: 下载链接, widget: string, hint: "GitHub Releases 原始链接"}
+              - {name: size, label: 文件大小, widget: string, required: false, hint: "如: 55.8MB"}
+              - {name: version, label: 版本号, widget: string, required: false, hint: "如: v1.0.3"}
+              - {name: date, label: 发布日期, widget: string, required: false, hint: "如: 2026-5-31"}
+              - label: 合集链接（可选，多版本下载）
+                name: links
+                widget: list
+                required: false
+                hint: "如需提供多个版本下载，在此添加"
                 fields:
-                  - {name: is_collection, label: 是否为合集, widget: boolean, default: false, hint: "合集可添加多个下载链接"}
-                  - {name: url, label: 下载链接, widget: string, required: false, hint: "非合集时填写"}
-                  - label: 合集链接
-                    name: links
-                    widget: list
-                    required: false
-                    fields:
-                      - {name: name, label: 版本名称, widget: string}
-                      - {name: url, label: 下载链接, widget: string}
-                      - {name: size, label: 文件大小, widget: string}
-              - {name: size, label: 文件大小, widget: string, required: false, hint: "单文件时填写"}
-              - {name: version, label: 版本号, widget: string, required: false}
-              - {name: date, label: 发布日期, widget: string, required: false, hint: "如: 2024-01-01"}
+                  - {name: name, label: 版本名称, widget: string}
+                  - {name: url, label: 下载链接, widget: string}
+                  - {name: size, label: 文件大小, widget: string}
