@@ -241,13 +241,21 @@ layout: page
     
     // 更新下载链接
     function updateDownloadLinks() {
-      var mirrorUrl = mirrorSelect ? mirrorSelect.value : '';
+      if (!mirrorSelect) return;
+      
+      var selectedOption = mirrorSelect.options[mirrorSelect.selectedIndex];
+      var mirrorUrl = selectedOption ? selectedOption.value : '';
+      
+      console.log('Updating download links with mirror:', mirrorUrl);
       
       document.querySelectorAll('.download-btn').forEach(function(btn) {
         var originalUrl = btn.getAttribute('data-original-url');
         if (!originalUrl) return;
+        
         if (mirrorUrl && originalUrl.indexOf('github.com') !== -1) {
-          btn.href = mirrorUrl + originalUrl;
+          var newUrl = mirrorUrl + originalUrl;
+          console.log('Updating URL:', originalUrl, '->', newUrl);
+          btn.href = newUrl;
         } else {
           btn.href = originalUrl;
         }
@@ -256,6 +264,7 @@ layout: page
       document.querySelectorAll('.download-link').forEach(function(link) {
         var originalUrl = link.getAttribute('data-original-url');
         if (!originalUrl) return;
+        
         if (mirrorUrl && originalUrl.indexOf('github.com') !== -1) {
           link.href = mirrorUrl + originalUrl;
         } else {
@@ -266,7 +275,8 @@ layout: page
     
     if (mirrorSelect) {
       mirrorSelect.addEventListener('change', updateDownloadLinks);
-      updateDownloadLinks();
+      // 延迟执行确保 DOM 完全加载
+      setTimeout(updateDownloadLinks, 100);
     }
     
     // 检查更新
