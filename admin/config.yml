@@ -63,6 +63,7 @@ collections:
     slug: "{{slug}}"
     extension: md
     format: frontmatter
+    identifier_field: name
     sortable_fields: ['name']
     fields:
       - {name: name, label: 加速源名称, widget: string}
@@ -77,6 +78,7 @@ collections:
     slug: "{{slug}}"
     extension: md
     format: frontmatter
+    identifier_field: name
     sortable_fields: ['name', 'date']
     view_filters:
       - label: 自制
