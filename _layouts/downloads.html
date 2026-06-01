@@ -6,9 +6,9 @@ layout: page
 <script src="/assets/js/downloads.js?v=3"></script>
 
 <div class="downloads-container">
-  {%- assign mirrors = site.data.mirrors.mirrors -%}
-  {%- assign default_mirror = site.data.mirrors.default_mirror -%}
-  {%- assign items = site.data.downloads.items -%}
+  {%- assign mirrors = site.mirrors -%}
+  {%- assign default_mirror = site.mirrors | where: 'default', true | first | default: site.mirrors.first -%}
+  {%- assign items = site.downloads -%}
   
   <!-- 筛选按钮 -->
   <div class="filter-bar mb-4">
@@ -31,7 +31,7 @@ layout: page
         <select class="form-select form-select-sm" id="mirror-select" style="max-width: 280px;">
           <option value="">不加速（直接访问）</option>
           {% for mirror in mirrors %}
-            <option value="{{ mirror.url }}" {% if mirror.name == default_mirror %}selected{% endif %}>
+            <option value="{{ mirror.url }}" {% if mirror.default %}selected{% endif %}>
               {{ mirror.name }}
             </option>
           {% endfor %}
