@@ -190,8 +190,14 @@ layout: page
   // 监听切换事件
   mirrorSelect.addEventListener('change', updateDownloadLinks);
   
-  // 初始化
-  updateDownloadLinks();
+  // 初始化 - 延迟确保 DOM 完全加载
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(updateDownloadLinks, 100);
+    });
+  } else {
+    setTimeout(updateDownloadLinks, 100);
+  }
   
   // 从 URL 解析 GitHub 仓库信息
   function parseGitHubUrl(url) {
