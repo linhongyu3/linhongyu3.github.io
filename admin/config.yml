@@ -106,7 +106,7 @@ collections:
           - {name: name, label: 软件名称, widget: string}
           - {name: description, label: 软件描述, widget: text, required: false}
           - {name: category, label: 分类, widget: select, options: [{label: 自制, value: self-made}, {label: 转载, value: repost}], default: self-made}
-          - {name: url, label: 下载链接, widget: string, hint: "GitHub Releases 原始链接"}
+          - {name: download_url, label: 下载链接, widget: string, hint: "GitHub Releases 原始链接"}
           - {name: size, label: 文件大小, widget: string, required: false}
           - {name: version, label: 版本号, widget: string, required: false}
           - {name: date, label: 发布日期, widget: datetime, format: "YYYY-MM-DD", required: false}
@@ -117,7 +117,7 @@ collections:
           - {name: name, label: 软件名称, widget: string}
           - {name: description, label: 软件描述, widget: text, required: false}
           - {name: category, label: 分类, widget: select, options: [{label: 自制, value: self-made}, {label: 转载, value: repost}], default: self-made}
-          - {name: url, label: 下载链接, widget: string, hint: "GitHub Releases 原始链接"}
+          - {name: download_url, label: 下载链接, widget: string, hint: "GitHub Releases 原始链接"}
           - {name: size, label: 文件大小, widget: string, required: false}
           - {name: version, label: 版本号, widget: string, required: false}
           - {name: date, label: 发布日期, widget: datetime, format: "YYYY-MM-DD", required: false}

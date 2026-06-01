@@ -81,8 +81,8 @@ layout: page
                   {% endfor %}
                 </ul>
               </div>
-            {% elsif item.url %}
-              <a href="{{ item.url }}" class="btn btn-outline-secondary btn-sm download-btn" data-original-url="{{ item.url }}" target="_blank" rel="noopener noreferrer">
+            {% elsif item.download_url %}
+              <a href="{{ item.download_url }}" class="btn btn-outline-secondary btn-sm download-btn" data-original-url="{{ item.download_url }}" target="_blank" rel="noopener noreferrer">
                 <i class="fas fa-download"></i> 下载
               </a>
             {% endif %}
