@@ -202,15 +202,22 @@ layout: page
     
     // 筛选功能
     function applyFilter(filterType) {
+      console.log('Applying filter:', filterType);
       downloadItems.forEach(function(item) {
         var category = item.getAttribute('data-category') || 'self-made';
+        console.log('Item category:', category, 'Item:', item.id);
         if (filterType === 'all' || category === filterType) {
           item.classList.remove('filtered-out');
+          item.style.display = '';
         } else {
           item.classList.add('filtered-out');
+          item.style.display = 'none';
         }
       });
     }
+    
+    // 初始状态：显示全部
+    applyFilter('all');
     
     filterBtns.forEach(function(btn) {
       // 同时支持 click 和 touch 事件
