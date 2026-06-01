@@ -47,7 +47,13 @@ collections:
         name: body
         widget: markdown
         required: true
-        hint: "支持 Markdown 语法，可使用工具栏插入图片、链接等，支持粘贴 Markdown 文稿"
+        hint: "支持 Markdown 语法，可使用工具栏插入图片、链接等"
+        editor_components:
+          - image
+          - code-block
+        modes:
+          - rich_text
+          - raw
 
   # ========== 镜像源 ==========
   - name: mirrors
