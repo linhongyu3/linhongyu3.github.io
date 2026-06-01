@@ -61,6 +61,8 @@ collections:
     folder: _mirrors
     create: true
     slug: "{{slug}}"
+    extension: md
+    format: frontmatter
     sortable_fields: ['name']
     fields:
       - {name: name, label: 加速源名称, widget: string}
@@ -73,6 +75,8 @@ collections:
     folder: _downloads
     create: true
     slug: "{{slug}}"
+    extension: md
+    format: frontmatter
     sortable_fields: ['name', 'date']
     view_filters:
       - label: 自制
