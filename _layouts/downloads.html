@@ -7,13 +7,26 @@ layout: page
   {%- assign default_mirror = site.data.downloads.default_mirror -%}
   {%- assign items = site.data.downloads.items -%}
   
+  <!-- 筛选按钮 -->
+  <div class="filter-bar mb-4">
+    <button class="filter-btn active" data-filter="all">
+      <i class="fas fa-th-large"></i> 全部
+    </button>
+    <button class="filter-btn" data-filter="self-made">
+      <i class="fas fa-code"></i> 自制
+    </button>
+    <button class="filter-btn" data-filter="repost">
+      <i class="fas fa-share-alt"></i> 转载
+    </button>
+  </div>
+  
   <!-- 控制面板 -->
   <div class="control-panel card mb-4">
-    <div class="card-body">
-      <div class="d-flex align-items-center">
-        <label class="me-3 fw-bold"><i class="fas fa-server"></i> 下载源：</label>
-        <select class="form-select" id="mirror-select" style="max-width: 300px;">
-          <option value="">不加速（直接访问 GitHub）</option>
+    <div class="card-body py-3">
+      <div class="d-flex align-items-center flex-wrap gap-3">
+        <label class="fw-bold text-secondary mb-0"><i class="fas fa-server"></i> 下载源：</label>
+        <select class="form-select form-select-sm" id="mirror-select" style="max-width: 280px;">
+          <option value="">不加速（直接访问）</option>
           {% for mirror in mirrors %}
             <option value="{{ mirror.url }}" {% if mirror.name == default_mirror %}selected{% endif %}>
               {{ mirror.name }}
@@ -24,83 +37,72 @@ layout: page
     </div>
   </div>
   
-  <!-- 自制软件 -->
-  {%- assign self_made = items | where: "category", "self-made" -%}
-  {% if self_made.size > 0 %}
-    <h3 class="category-title">
-      <i class="fas fa-code"></i> 自制软件
-    </h3>
-    <div class="download-list mb-5">
-      {% for item in self_made %}
-        {%- assign item_index = forloop.index0 -%}
-        <div class="download-item card mb-3" data-index="{{ item_index }}" data-url="{{ item.url }}">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <h4 class="card-title">{{ item.name }}</h4>
-                {% if item.description %}
-                  <p class="card-text text-muted">{{ item.description }}</p>
-                {% endif %}
+  <!-- 下载列表 -->
+  <div class="download-list">
+    {% for item in items %}
+      {%- assign item_index = forloop.index0 -%}
+      <div class="download-item card mb-3" 
+           data-index="{{ item_index }}" 
+           data-category="{{ item.category | default: 'self-made' }}">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h4 class="card-title">{{ item.name }}</h4>
+              {% if item.description %}
+                <p class="card-text text-muted mb-2">{{ item.description }}</p>
+              {% endif %}
+            </div>
+            {% if item.category == 'self-made' %}
+              <span class="badge bg-secondary">自制</span>
+            {% else %}
+              <span class="badge bg-light text-dark border">转载</span>
+            {% endif %}
+          </div>
+          
+          <div class="download-meta mb-3">
+            <span class="badge bg-light text-secondary border me-2 version-badge">版本: {{ item.version }}</span>
+            <span class="badge bg-light text-secondary border me-2 size-badge">大小: {{ item.size }}</span>
+            <span class="badge bg-light text-secondary border date-badge">日期: {{ item.date }}</span>
+          </div>
+          
+          <!-- 下载按钮组 -->
+          <div class="download-actions">
+            {% if item.links and item.links.size > 0 %}
+              <!-- 合集：多个下载链接 -->
+              <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-download"></i> 选择版本下载
+                </button>
+                <ul class="dropdown-menu">
+                  {% for link in item.links %}
+                    <li>
+                      <a class="dropdown-item download-link" href="{{ link.url }}" data-original-url="{{ link.url }}" target="_blank" rel="noopener noreferrer">
+                        {{ link.name }} <span class="text-muted">({{ link.size }})</span>
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
               </div>
-              <span class="badge bg-primary">自制</span>
-            </div>
-            <div class="download-meta mb-3 mt-2">
-              <span class="badge bg-secondary me-2 version-badge">版本: {{ item.version }}</span>
-              <span class="badge bg-info me-2 size-badge">大小: {{ item.size }}</span>
-              <span class="badge bg-light text-dark date-badge">日期: {{ item.date }}</span>
-            </div>
-            <a href="{{ item.url }}" class="btn btn-primary download-btn" target="_blank" rel="noopener noreferrer">
-              <i class="fas fa-download"></i> 下载
-            </a>
-            <span class="checking-update ms-2" style="display:none;">
-              <i class="fas fa-sync fa-spin"></i> 检查更新中...
+            {% elsif item.url %}
+              <!-- 单个下载 -->
+              <a href="{{ item.url }}" class="btn btn-outline-secondary btn-sm download-btn" data-original-url="{{ item.url }}" target="_blank" rel="noopener noreferrer">
+                <i class="fas fa-download"></i> 下载
+              </a>
+            {% endif %}
+            
+            <span class="checking-update ms-2 text-muted small" style="display:none;">
+              <i class="fas fa-sync fa-spin"></i> 检查更新
             </span>
           </div>
         </div>
-      {% endfor %}
-    </div>
-  {% endif %}
+      </div>
+    {% endfor %}
+  </div>
   
-  <!-- 转载软件 -->
-  {%- assign repost = items | where: "category", "repost" -%}
-  {% if repost.size > 0 %}
-    <h3 class="category-title">
-      <i class="fas fa-share-alt"></i> 转载软件
-    </h3>
-    <div class="download-list mb-5">
-      {% for item in repost %}
-        {%- assign item_index = forloop.index0 -%}
-        <div class="download-item card mb-3" data-index="{{ item_index }}" data-url="{{ item.url }}">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <h4 class="card-title">{{ item.name }}</h4>
-                {% if item.description %}
-                  <p class="card-text text-muted">{{ item.description }}</p>
-                {% endif %}
-              </div>
-              <span class="badge bg-secondary">转载</span>
-            </div>
-            <div class="download-meta mb-3 mt-2">
-              <span class="badge bg-secondary me-2 version-badge">版本: {{ item.version }}</span>
-              <span class="badge bg-info me-2 size-badge">大小: {{ item.size }}</span>
-              <span class="badge bg-light text-dark date-badge">日期: {{ item.date }}</span>
-            </div>
-            <a href="{{ item.url }}" class="btn btn-primary download-btn" target="_blank" rel="noopener noreferrer">
-              <i class="fas fa-download"></i> 下载
-            </a>
-            <span class="checking-update ms-2" style="display:none;">
-              <i class="fas fa-sync fa-spin"></i> 检查更新中...
-            </span>
-          </div>
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
-  
-  {% if self_made.size == 0 and repost.size == 0 %}
-    <div class="alert alert-info">
-      <i class="fas fa-info-circle"></i> 暂无下载内容
+  {% if items.size == 0 %}
+    <div class="alert alert-light border text-center py-5">
+      <i class="fas fa-inbox text-muted" style="font-size: 3rem;"></i>
+      <p class="mt-3 text-muted mb-0">暂无下载内容</p>
     </div>
   {% endif %}
 </div>
@@ -109,97 +111,168 @@ layout: page
 .downloads-container {
   margin-top: 1rem;
 }
-.control-panel {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
+
+/* 筛选按钮 - 简约灰白风格 */
+.filter-bar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
-.control-panel .card-body {
-  color: white;
+.filter-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #dee2e6;
+  background: #fff;
+  color: #6c757d;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
 }
-.control-panel .form-check-label {
-  color: white;
-  font-weight: 500;
+.filter-btn:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
 }
-.control-panel .input-group-text {
-  background: rgba(255,255,255,0.2);
-  border: none;
-  color: white;
-}
-.control-panel .form-select {
-  background: rgba(255,255,255,0.9);
-  border: none;
-}
-.category-title {
-  margin: 2rem 0 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e9ecef;
+.filter-btn.active {
+  background: #e9ecef;
+  border-color: #6c757d;
   color: #495057;
 }
-.category-title i {
-  margin-right: 0.5rem;
-  color: #4285f4;
+.filter-btn i {
+  margin-right: 0.25rem;
 }
+
+/* 控制面板 - 简约风格 */
+.control-panel {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+}
+.control-panel .form-select {
+  border-color: #ced4da;
+}
+.control-panel .form-select:focus {
+  border-color: #adb5bd;
+  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.15);
+}
+
+/* 下载项 */
 .download-item {
-  transition: transform 0.2s, box-shadow 0.2s;
-  border-left: 4px solid #4285f4;
+  border: 1px solid #e9ecef;
+  transition: box-shadow 0.2s;
 }
 .download-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 .download-item .card-title {
   margin-bottom: 0.5rem;
   color: #333;
+  font-size: 1.1rem;
 }
 .download-meta .badge {
-  font-size: 0.85em;
+  font-size: 0.8em;
+  font-weight: normal;
 }
+
+/* 下载按钮 - 简约灰白 */
+.download-actions .btn-outline-secondary {
+  color: #6c757d;
+  border-color: #ced4da;
+}
+.download-actions .btn-outline-secondary:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+  color: #495057;
+}
+.download-actions .dropdown-menu {
+  border-color: #dee2e6;
+}
+.download-actions .dropdown-item {
+  color: #495057;
+}
+.download-actions .dropdown-item:hover {
+  background: #f8f9fa;
+}
+
+/* 隐藏元素 */
+.hidden {
+  display: none !important;
+}
+
+/* 新版本动画 */
 .new-version {
-  animation: pulse 1.5s infinite;
+  animation: pulse 2s infinite;
 }
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.02); }
-}
-#mirror-select {
-  cursor: pointer;
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const mirrorSelect = document.getElementById('mirror-select');
-  if (!mirrorSelect) return;
+  var mirrorSelect = document.getElementById('mirror-select');
+  var filterBtns = document.querySelectorAll('.filter-btn');
+  var downloadItems = document.querySelectorAll('.download-item');
   
-  // 更新所有下载链接
-  function updateDownloadLinks() {
-    const mirrorUrl = mirrorSelect.value;
-    const buttons = document.querySelectorAll('.download-btn');
-    
-    buttons.forEach(function(btn) {
-      const item = btn.closest('.download-item');
-      if (!item) return;
+  // 筛选功能
+  filterBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var filter = this.getAttribute('data-filter');
       
-      const originalUrl = item.getAttribute('data-url');
+      // 更新按钮状态
+      filterBtns.forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      
+      // 筛选项目
+      downloadItems.forEach(function(item) {
+        var category = item.getAttribute('data-category') || 'self-made';
+        if (filter === 'all' || category === filter) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    });
+  });
+  
+  // 更新下载链接（仅 GitHub 链接使用加速）
+  function updateDownloadLinks() {
+    var mirrorUrl = mirrorSelect ? mirrorSelect.value : '';
+    
+    // 更新普通下载按钮
+    document.querySelectorAll('.download-btn').forEach(function(btn) {
+      var originalUrl = btn.getAttribute('data-original-url');
       if (!originalUrl) return;
       
-      if (mirrorUrl) {
+      // 只有 GitHub 链接才使用加速
+      if (mirrorUrl && originalUrl.indexOf('github.com') !== -1) {
         btn.href = mirrorUrl + originalUrl;
       } else {
         btn.href = originalUrl;
       }
     });
+    
+    // 更新下拉菜单链接
+    document.querySelectorAll('.download-link').forEach(function(link) {
+      var originalUrl = link.getAttribute('data-original-url');
+      if (!originalUrl) return;
+      
+      if (mirrorUrl && originalUrl.indexOf('github.com') !== -1) {
+        link.href = mirrorUrl + originalUrl;
+      } else {
+        link.href = originalUrl;
+      }
+    });
   }
   
-  // 监听切换事件
-  mirrorSelect.addEventListener('change', updateDownloadLinks);
+  // 监听加速源切换
+  if (mirrorSelect) {
+    mirrorSelect.addEventListener('change', updateDownloadLinks);
+    updateDownloadLinks();
+  }
   
-  // 立即执行一次
-  updateDownloadLinks();
-  
-  // 从 URL 解析 GitHub 仓库信息
+  // 检查 GitHub Releases 更新
   function parseGitHubUrl(url) {
-    const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)\/releases\/download\/([^\/]+)\/(.+)/);
+    var match = url.match(/github\.com\/([^\/]+)\/([^\/]+)\/releases\/download\/([^\/]+)\/(.+)/);
     if (!match) return null;
     return {
       owner: match[1],
@@ -209,71 +282,39 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
   
-  // 获取最新 release
-  async function getLatestRelease(owner, repo) {
-    const url = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
-    const res = await fetch(url, { 
-      headers: { 'Accept': 'application/vnd.github.v3+json' }
-    });
-    if (!res.ok) throw new Error('Failed to fetch');
-    return await res.json();
-  }
-  
-  // 格式化大小
-  function formatSize(bytes) {
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + 'KB';
-    if (bytes < 1024 * 1024 * 1024) return (bytes / 1024 / 1024).toFixed(1) + 'MB';
-    return (bytes / 1024 / 1024 / 1024).toFixed(1) + 'GB';
-  }
-  
-  // 检查更新
-  async function checkForUpdates() {
-    const items = document.querySelectorAll('.download-item');
-    
-    for (const item of items) {
-      const url = item.getAttribute('data-url');
-      const info = parseGitHubUrl(url);
-      if (!info) continue;
+  function checkForUpdates() {
+    downloadItems.forEach(function(item) {
+      var btn = item.querySelector('.download-btn') || item.querySelector('.download-link');
+      if (!btn) return;
       
-      const checking = item.querySelector('.checking-update');
+      var url = btn.getAttribute('data-original-url');
+      var info = parseGitHubUrl(url);
+      if (!info) return;
+      
+      var checking = item.querySelector('.checking-update');
       if (checking) checking.style.display = 'inline';
       
-      try {
-        const release = await getLatestRelease(info.owner, info.repo);
-        const latestTag = release.tag_name;
-        
-        if (latestTag !== info.tag) {
-          const versionBadge = item.querySelector('.version-badge');
-          const sizeBadge = item.querySelector('.size-badge');
-          const dateBadge = item.querySelector('.date-badge');
-          
-          const newAsset = release.assets.find(function(a) { 
-            return a.name.includes(info.asset.split('_')[0]) || 
-                   a.name.endsWith('.exe') || 
-                   a.name.endsWith('.zip');
-          });
-          
-          if (newAsset) {
-            item.setAttribute('data-url', newAsset.browser_download_url);
-            updateDownloadLinks();
-            
-            versionBadge.textContent = '版本: ' + latestTag + ' (新)';
+      fetch('https://api.github.com/repos/' + info.owner + '/' + info.repo + '/releases/latest', {
+        headers: { 'Accept': 'application/vnd.github.v3+json' }
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(release) {
+        if (release.tag_name && release.tag_name !== info.tag) {
+          var versionBadge = item.querySelector('.version-badge');
+          if (versionBadge) {
+            versionBadge.textContent = '版本: ' + release.tag_name + ' (新)';
             versionBadge.classList.add('new-version', 'bg-success');
-            versionBadge.classList.remove('bg-secondary');
-            
-            sizeBadge.textContent = '大小: ' + formatSize(newAsset.size);
-            dateBadge.textContent = '日期: ' + new Date(release.published_at).toLocaleDateString('zh-CN');
+            versionBadge.classList.remove('bg-light', 'text-secondary');
           }
         }
-      } catch (e) {
-        console.log('检查更新失败:', e.message);
-      }
-      
-      if (checking) checking.style.display = 'none';
-    }
+      })
+      .catch(function() {})
+      .finally(function() {
+        if (checking) checking.style.display = 'none';
+      });
+    });
   }
   
-  // 页面加载后检查更新
   checkForUpdates();
 });
 </script>

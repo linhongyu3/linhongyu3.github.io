@@ -15,12 +15,38 @@ collections:
     folder: _posts
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: ['date', 'title']
+    view_filters:
+      - label: 技术
+        field: categories
+        pattern: 技术
+      - label: 折腾
+        field: categories
+        pattern: 折腾
+      - label: 生活
+        field: categories
+        pattern: 生活
+    view_groups:
+      - label: 按分类
+        field: categories
+      - label: 按年份
+        field: date
+        pattern: "\\d{4}"
     fields:
-      - {name: title,        label: 标题,   widget: text}
-      - {name: date,          label: 日期,   widget: datetime, format: "yyyy-MM-dd HH:mm:ss Z"}
-      - {name: categories,   label: 分类,   widget: select, options: [技术, 折腾, 生活], default: 技术}
-      - {name: tags,         label: 标签,   widget: list}
-      - {name: body,          label: 正文,   widget: markdown}
+      - label: 基本信息
+        name: info
+        widget: object
+        collapsed: false
+        fields:
+          - {name: title, label: 标题, widget: string, required: true}
+          - {name: date, label: 发布日期, widget: datetime, format: "yyyy-MM-dd HH:mm:ss Z", required: true}
+          - {name: categories, label: 分类, widget: select, options: [技术, 折腾, 生活], default: 技术}
+          - {name: tags, label: 标签, widget: list, hint: "按回车添加多个标签"}
+      - label: 正文内容
+        name: body
+        widget: markdown
+        required: true
+        hint: "支持 Markdown 语法，可使用工具栏插入图片、链接等"
 
   - name: downloads
     label: 下载管理
@@ -29,14 +55,34 @@ collections:
         name: "downloads"
         file: _data/downloads.yml
         fields:
-          - {name: cdn_prefix, label: GitHub加速前缀, widget: string, hint: "例如: https://mirror.example.com，留空则不加速"}
+          - label: 加速源配置
+            name: mirrors
+            widget: list
+            fields:
+              - {name: name, label: 加速源名称, widget: string}
+              - {name: url, label: 加速源URL, widget: string, hint: "以 / 结尾"}
+          - {name: default_mirror, label: 默认加速源, widget: string, hint: "填写加速源名称"}
           - label: 下载列表
             name: items
             widget: list
             fields:
-              - {name: name,        label: 文件名称,   widget: string}
-              - {name: description, label: 文件描述,   widget: text,   required: false}
-              - {name: url,         label: 下载链接,   widget: string}
-              - {name: size,        label: 文件大小,   widget: string, required: false, hint: "如: 1.0 MB"}
-              - {name: version,     label: 版本号,     widget: string, required: false}
-              - {name: date,        label: 发布日期,   widget: string, required: false, hint: "如: 2024-01-01"}
+              - {name: name, label: 软件名称, widget: string}
+              - {name: description, label: 软件描述, widget: text, required: false}
+              - {name: category, label: 分类, widget: select, options: [{label: 自制, value: self-made}, {label: 转载, value: repost}], default: self-made}
+              - label: 下载方式
+                name: download_type
+                widget: object
+                fields:
+                  - {name: is_collection, label: 是否为合集, widget: boolean, default: false, hint: "合集可添加多个下载链接"}
+                  - {name: url, label: 下载链接, widget: string, required: false, hint: "非合集时填写"}
+                  - label: 合集链接
+                    name: links
+                    widget: list
+                    required: false
+                    fields:
+                      - {name: name, label: 版本名称, widget: string}
+                      - {name: url, label: 下载链接, widget: string}
+                      - {name: size, label: 文件大小, widget: string}
+              - {name: size, label: 文件大小, widget: string, required: false, hint: "单文件时填写"}
+              - {name: version, label: 版本号, widget: string, required: false}
+              - {name: date, label: 发布日期, widget: string, required: false, hint: "如: 2024-01-01"}

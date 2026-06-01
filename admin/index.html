@@ -4,11 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>后台管理</title>
+  <style>
+    /* 隐藏 GitHub 登录按钮，只保留 Token 登录 */
+    [data-testid="auth-button-github"],
+    button[data-provider="github"],
+    .auth-button-github {
+      display: none !important;
+    }
+  </style>
 </head>
 <body>
   <!-- Sveltia CMS（无 Netlify 依赖） -->
   <script src="assets/sveltia-cms.js"></script>
-  <!-- 自定义插件：Markdown 文件导入 -->
-  <script src="assets/md-import.js"></script>
+  <!-- 自定义登录界面修改 -->
+  <script src="assets/custom-auth.js"></script>
 </body>
 </html>

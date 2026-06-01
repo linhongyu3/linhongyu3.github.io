@@ -11,7 +11,7 @@ mirrors:
   - name: "moeyy"
     url: "https://gh.api.99988866.xyz/"
 
-# 默认加速源（默认启用加速）
+# 默认加速源
 default_mirror: "gh-proxy v6"
 
 # 下载项分类
