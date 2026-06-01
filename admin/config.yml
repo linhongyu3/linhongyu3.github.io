@@ -10,7 +10,7 @@ media_folder: assets/img/uploads
 public_folder: /assets/img/uploads
 
 collections:
-  # ========== 文章管理 ==========
+  # ========== 文章 ==========
   - name: posts
     label: 文章
     folder: _posts
@@ -49,11 +49,11 @@ collections:
         required: true
         hint: "支持 Markdown 语法，可使用工具栏插入图片、链接等，支持粘贴 Markdown 文稿"
 
-  # ========== 下载管理 - 加速源配置 ==========
+  # ========== 镜像源 ==========
   - name: mirrors
-    label: 下载管理 / 加速源
+    label: 镜像源
     files:
-      - label: "加速源配置"
+      - label: "镜像清单"
         name: "mirrors"
         file: _data/mirrors.yml
         fields:
@@ -65,11 +65,11 @@ collections:
               - {name: name, label: 加速源名称, widget: string}
               - {name: url, label: 加速源URL, widget: string, hint: "以 / 结尾，如 https://v6.gh-proxy.org/"}
 
-  # ========== 下载管理 - 软件列表 ==========
+  # ========== 软件清单 ==========
   - name: downloads
-    label: 下载管理 / 软件列表
+    label: 软件清单
     files:
-      - label: "软件列表"
+      - label: "软件清单"
         name: "downloads"
         file: _data/downloads.yml
         fields:
