@@ -28,11 +28,22 @@
       cursor: pointer;
       box-shadow: 0 2px 10px rgba(0,0,0,0.3);
       transition: all 0.3s ease;
+      display: none;
+      animation: pulse 2s infinite;
+    }
+    
+    .cache-clear-btn.visible {
+      display: block;
     }
     
     .cache-clear-btn:hover {
       background: #c82333;
       transform: scale(1.1);
+    }
+    
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 2px 10px rgba(220,53,69,0.3); }
+      50% { box-shadow: 0 2px 20px rgba(220,53,69,0.6); }
     }
     
     /* 弹窗样式 */
@@ -113,14 +124,15 @@
   </style>
 </head>
 <body>
-  <!-- 缓存清理按钮 -->
-  <button class="cache-clear-btn" id="cacheClearBtn" title="清理缓存">🗑️</button>
+  <!-- 缓存清理按钮（仅在检测到缓存过期时显示） -->
+  <button class="cache-clear-btn" id="cacheClearBtn" title="检测到缓存过期，点击清理">🗑️</button>
   
   <!-- 确认弹窗 -->
   <div class="cache-modal-overlay" id="cacheModal">
     <div class="cache-modal">
-      <h3>🗑️ 清理缓存</h3>
-      <p>这将清除 Sveltia CMS 的本地缓存数据，包括：</p>
+      <h3>🔄 检测到缓存过期</h3>
+      <p>后台配置已更新，但本地缓存仍为旧版本。清理缓存后即可加载最新配置。</p>
+      <p>清理内容包括：</p>
       <ul style="text-align: left; color: #666;">
         <li>Collection 配置缓存</li>
         <li>条目数据缓存</li>
@@ -128,8 +140,8 @@
       </ul>
       <p><strong>清理后页面将刷新，您需要重新登录。</strong></p>
       <div class="cache-modal-buttons">
-        <button class="cache-modal-btn cancel" id="cancelBtn">取消</button>
-        <button class="cache-modal-btn confirm" id="confirmBtn">确认清理</button>
+        <button class="cache-modal-btn cancel" id="cancelBtn">稍后再说</button>
+        <button class="cache-modal-btn confirm" id="confirmBtn">立即清理</button>
       </div>
     </div>
   </div>
@@ -139,13 +151,24 @@
   <!-- 自定义登录界面修改 -->
   <script src="assets/custom-auth.js"></script>
   
-  <!-- 缓存清理功能 -->
+  <!-- 缓存检测与清理功能 -->
   <script>
     (function() {
-      const cacheBtn = document.getElementById('cacheClearBtn');
-      const modal = document.getElementById('cacheModal');
-      const cancelBtn = document.getElementById('cancelBtn');
-      const confirmBtn = document.getElementById('confirmBtn');
+      var CACHE_VERSION_KEY = 'sveltia-cms-config-version';
+      var CURRENT_VERSION = '2026-06-03-v3';
+      
+      var cacheBtn = document.getElementById('cacheClearBtn');
+      var modal = document.getElementById('cacheModal');
+      var cancelBtn = document.getElementById('cancelBtn');
+      var confirmBtn = document.getElementById('confirmBtn');
+      
+      // 检查缓存版本是否匹配
+      var cachedVersion = localStorage.getItem(CACHE_VERSION_KEY);
+      
+      if (cachedVersion !== CURRENT_VERSION) {
+        // 版本不匹配，显示清理按钮
+        cacheBtn.classList.add('visible');
+      }
       
       // 显示弹窗
       cacheBtn.addEventListener('click', function() {
@@ -175,9 +198,9 @@
         sessionStorage.clear();
         
         // 清理 IndexedDB (Sveltia CMS 使用)
-        const dbs = ['sveltia-cms', 'sveltia-cms-data', 'sveltia-cms-cache'];
-        dbs.forEach(dbName => {
-          const req = indexedDB.deleteDatabase(dbName);
+        var dbs = ['sveltia-cms', 'sveltia-cms-data', 'sveltia-cms-cache'];
+        dbs.forEach(function(dbName) {
+          var req = indexedDB.deleteDatabase(dbName);
           req.onsuccess = function() {
             console.log('Deleted database: ' + dbName);
           };
@@ -199,6 +222,17 @@
         alert('缓存已清理，页面将刷新...');
         window.location.reload(true);
       });
+      
+      // Sveltia CMS 加载成功后，记录当前版本
+      var observer = new MutationObserver(function() {
+        var appRoot = document.querySelector('[data-testid="app-root"], .cms-app, #root');
+        if (appRoot && appRoot.children.length > 0) {
+          localStorage.setItem(CACHE_VERSION_KEY, CURRENT_VERSION);
+          cacheBtn.classList.remove('visible');
+          observer.disconnect();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
     })();
   </script>
 </body>
