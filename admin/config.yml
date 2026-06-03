@@ -34,15 +34,10 @@ collections:
         field: date
         pattern: "\\d{4}"
     fields:
-      - label: 基本信息
-        name: info
-        widget: object
-        collapsed: false
-        fields:
-          - {name: title, label: 标题, widget: string, required: true}
-          - {name: date, label: 发布日期, widget: datetime, format: "yyyy-MM-dd HH:mm:ss Z", required: true, default: "{{now}}" }
-          - {name: categories, label: 分类, widget: select, options: [技术, 折腾, 生活], default: 技术}
-          - {name: tags, label: 标签, widget: list, hint: "按回车添加多个标签", collapsed: true}
+      - {name: title, label: 标题, widget: string, required: true}
+      - {name: date, label: 发布日期, widget: datetime, format: "yyyy-MM-dd HH:mm:ss Z", required: true, default: "{{now}}" }
+      - {name: categories, label: 分类, widget: select, options: [技术, 折腾, 生活], default: 技术}
+      - {name: tags, label: 标签, widget: list, hint: "按回车添加多个标签", collapsed: true}
       - label: 正文内容
         name: body
         widget: markdown
