@@ -2,8 +2,7 @@
 layout: page
 ---
 
-<script>window._downloads_version = 'v3';</script>
-<script src="/assets/js/downloads.js?v=3"></script>
+<script>window._downloads_version = 'v4';</script>
 
 <div class="downloads-container">
   {%- assign mirrors = site.mirrors -%}
@@ -40,9 +39,34 @@ layout: page
     </div>
   </div>
   
-  <!-- 下载列表 -->
+  <!-- 下载列表（按软件组分组） -->
   <div class="download-list" id="download-list">
+    {%- assign groups = items | map: 'group' | compact | uniq -%}
+    {%- if groups.size == 0 -%}
+      {%- assign groups = '其他' | split: ',' -%}
+    {%- endif -%}
+    {%- assign processed_groups = '' | split: ',' -%}
+
     {% for item in items %}
+      {%- assign item_group = item.group | default: '其他' -%}
+      {%- assign is_new_group = true -%}
+      {%- for pg in processed_groups -%}
+        {%- if pg == item_group -%}
+          {%- assign is_new_group = false -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if is_new_group -%}
+        {%- unless forloop.first -%}
+        </div><!-- 关闭上一个组 -->
+        {%- endunless -%}
+        <div class="download-group" data-group="{{ item_group }}">
+          <h3 class="group-title mb-3">
+            <i class="fas fa-folder-open me-2"></i>{{ item_group }}
+          </h3>
+        {%- assign processed_groups = processed_groups | push: item_group -%}
+      {%- endif -%}
+
       {%- assign item_index = forloop.index0 -%}
       <div class="download-item card mb-3" 
            id="download-item-{{ item_index }}"
@@ -59,34 +83,24 @@ layout: page
           </div>
           
           <div class="download-meta mb-3">
+            {% if item.version %}
             <span class="badge bg-light text-secondary border me-2 version-badge">版本: {{ item.version }}</span>
+            {% endif %}
+            {% if item.size %}
             <span class="badge bg-light text-secondary border me-2 size-badge">大小: {{ item.size }}</span>
+            {% endif %}
+            {% if item.date %}
             <span class="badge bg-light text-secondary border date-badge">日期: {{ item.date }}</span>
+            {% endif %}
           </div>
           
-          <!-- 下载按钮组 -->
+          <!-- 下载按钮 -->
           <div class="download-actions">
-            {% if item.links and item.links.size > 0 %}
-              <div class="dropdown">
-                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="fas fa-download"></i> 选择版本下载
-                </button>
-                <ul class="dropdown-menu">
-                  {% for link in item.links %}
-                    <li>
-                      <a class="dropdown-item download-link" href="{{ link.url }}" data-original-url="{{ link.url }}" target="_blank" rel="noopener noreferrer">
-                        {{ link.name }} <span class="text-muted">({{ link.size }})</span>
-                      </a>
-                    </li>
-                  {% endfor %}
-                </ul>
-              </div>
-            {% elsif item.download_url %}
+            {% if item.download_url %}
               <a href="{{ item.download_url }}" class="btn btn-outline-secondary btn-sm download-btn" data-original-url="{{ item.download_url }}" target="_blank" rel="noopener noreferrer">
                 <i class="fas fa-download"></i> 下载
               </a>
             {% endif %}
-            
             <span class="checking-update ms-2 text-muted small" style="display:none;">
               <i class="fas fa-sync fa-spin"></i> 检查更新
             </span>
@@ -94,6 +108,7 @@ layout: page
         </div>
       </div>
     {% endfor %}
+    </div><!-- 关闭最后一个组 -->
   </div>
   
   {% if items.size == 0 %}
@@ -107,6 +122,18 @@ layout: page
 <style>
 .downloads-container {
   margin-top: 1rem;
+}
+
+/* 软件组标题 */
+.group-title {
+  color: #495057;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+}
+.group-title i {
+  color: #6c757d;
 }
 
 /* 筛选按钮 */
@@ -183,6 +210,9 @@ layout: page
 .download-item.filtered-out {
   display: none !important;
 }
+.download-group.filtered-out {
+  display: none !important;
+}
 
 /* 新版本动画 */
 .new-version {
@@ -194,4 +224,4 @@ layout: page
 }
 </style>
 
-<script src="/assets/js/downloads.js"></script>
+<script src="/assets/js/downloads.js?v=4"></script>

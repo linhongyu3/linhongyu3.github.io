@@ -53,66 +53,46 @@ collections:
   # ========== 镜像源 ==========
   - name: mirrors
     label: 镜像源
-    files:
-      - label: gh-proxy v6
-        name: gh-proxy-v6
-        file: _mirrors/gh-proxy-v6.md
-        fields:
-          - {name: name, label: 加速源名称, widget: string}
-          - {name: url, label: 加速源URL, widget: string, hint: "以 / 结尾"}
-          - {name: default, label: 设为默认, widget: boolean, default: false}
-      - label: gh-proxy v1
-        name: gh-proxy-v1
-        file: _mirrors/gh-proxy-v1.md
-        fields:
-          - {name: name, label: 加速源名称, widget: string}
-          - {name: url, label: 加速源URL, widget: string, hint: "以 / 结尾"}
-          - {name: default, label: 设为默认, widget: boolean, default: false}
-      - label: ghproxy
-        name: ghproxy
-        file: _mirrors/ghproxy.md
-        fields:
-          - {name: name, label: 加速源名称, widget: string}
-          - {name: url, label: 加速源URL, widget: string, hint: "以 / 结尾"}
-          - {name: default, label: 设为默认, widget: boolean, default: false}
-      - label: mirror.ghproxy
-        name: mirror-ghproxy
-        file: _mirrors/mirror-ghproxy.md
-        fields:
-          - {name: name, label: 加速源名称, widget: string}
-          - {name: url, label: 加速源URL, widget: string, hint: "以 / 结尾"}
-          - {name: default, label: 设为默认, widget: boolean, default: false}
-      - label: moeyy
-        name: moeyy
-        file: _mirrors/moeyy.md
-        fields:
-          - {name: name, label: 加速源名称, widget: string}
-          - {name: url, label: 加速源URL, widget: string, hint: "以 / 结尾"}
-          - {name: default, label: 设为默认, widget: boolean, default: false}
+    folder: _mirrors
+    create: true
+    slug: "{{slug}}"
+    identifier_field: name
+    extension: md
+    format: frontmatter
+    sortable_fields: ['name']
+    fields:
+      - {name: name, label: 加速源名称, widget: string, required: true}
+      - {name: url, label: 加速源URL, widget: string, required: true, hint: "以 / 结尾"}
+      - {name: default, label: 设为默认, widget: boolean, default: false, hint: "同一时间只能有一个默认源"}
 
   # ========== 软件清单 ==========
   - name: downloads
     label: 软件清单
-    files:
-      - label: ClassRoomControl
-        name: classroomcontrol
-        file: _downloads/classroomcontrol.md
-        fields:
-          - {name: name, label: 软件名称, widget: string}
-          - {name: description, label: 软件描述, widget: text, required: false}
-          - {name: category, label: 分类, widget: select, options: [{label: 自制, value: self-made}, {label: 转载, value: repost}], default: self-made}
-          - {name: download_url, label: 下载链接, widget: string, hint: "GitHub Releases 原始链接"}
-          - {name: size, label: 文件大小, widget: string, required: false}
-          - {name: version, label: 版本号, widget: string, required: false}
-          - {name: date, label: 发布日期, widget: datetime, format: "YYYY-MM-DD", required: false}
-      - label: TestRepost
-        name: testrepost
-        file: _downloads/testrepost.md
-        fields:
-          - {name: name, label: 软件名称, widget: string}
-          - {name: description, label: 软件描述, widget: text, required: false}
-          - {name: category, label: 分类, widget: select, options: [{label: 自制, value: self-made}, {label: 转载, value: repost}], default: self-made}
-          - {name: download_url, label: 下载链接, widget: string, hint: "GitHub Releases 原始链接"}
-          - {name: size, label: 文件大小, widget: string, required: false}
-          - {name: version, label: 版本号, widget: string, required: false}
-          - {name: date, label: 发布日期, widget: datetime, format: "YYYY-MM-DD", required: false}
+    folder: _downloads
+    create: true
+    slug: "{{slug}}"
+    identifier_field: name
+    extension: md
+    format: frontmatter
+    sortable_fields: ['name', 'date']
+    view_filters:
+      - label: 自制
+        field: category
+        pattern: self-made
+      - label: 转载
+        field: category
+        pattern: repost
+    view_groups:
+      - label: 按软件组
+        field: group
+      - label: 按分类
+        field: category
+    fields:
+      - {name: name, label: 软件名称, widget: string, required: true}
+      - {name: description, label: 软件描述, widget: text, required: false}
+      - {name: group, label: 软件组, widget: string, required: false, hint: "用于在下载页分组显示，留空则归入「其他」"}
+      - {name: category, label: 分类, widget: select, options: [{label: 自制, value: self-made}, {label: 转载, value: repost}], default: self-made}
+      - {name: download_url, label: 下载链接, widget: string, required: true, hint: "GitHub Releases 原始链接"}
+      - {name: size, label: 文件大小, widget: string, required: false}
+      - {name: version, label: 版本号, widget: string, required: false}
+      - {name: date, label: 发布日期, widget: datetime, format: "YYYY-MM-DD", required: false}
