@@ -2,103 +2,95 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="关于" description="关于 lhy 的一些信息">
-  <section class="pt-28 pb-8 px-4">
-    <div class="max-w-3xl mx-auto text-center">
-      <div class="inline-block w-24 h-24 rounded-full bg-gradient-to-br from-brand-500 via-purple-500 to-pink-500 text-5xl flex items-center justify-center mb-6 shadow-glow animate-float">
-        👨‍💻
-      </div>
-      <h1 class="text-5xl font-black gradient-text mb-4">关于我</h1>
-      <p class="text-xl text-slate-600 dark:text-slate-400">一个热爱编程的普通人</p>
-    </div>
-  </section>
-
-  <section class="px-4 pb-12">
-    <div class="max-w-3xl mx-auto space-y-6">
-      <div class="glass-card rounded-3xl p-8">
-        <h2 class="text-2xl font-bold mb-4 text-slate-900 dark:text-white flex items-center gap-2">
-          <span>👋</span>
-          <span>你好！</span>
-        </h2>
-        <div class="prose-content">
-          <p>我是 lhy，一名对技术充满热情的开发者。这个博客是我记录学习笔记、分享编程经验和生活感悟的地方。</p>
-          <p>我相信知识应该被自由分享，也希望通过文字记录下自己成长的足迹，与志同道合的朋友们交流。</p>
-        </div>
+<BaseLayout title="关于" description="关于 lhy">
+  <div class="page-wrap">
+    <div class="page-inner">
+      <div class="page-header">
+        <h1 class="page-title">关于</h1>
       </div>
 
-      <div class="glass-card rounded-3xl p-8">
-        <h2 class="text-2xl font-bold mb-4 text-slate-900 dark:text-white flex items-center gap-2">
-          <span>🎯</span>
-          <span>我的兴趣</span>
-        </h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div class="p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 text-center">
-            <div class="text-3xl mb-2">💻</div>
-            <div class="font-medium text-slate-700 dark:text-slate-300">编程开发</div>
-          </div>
-          <div class="p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 text-center">
-            <div class="text-3xl mb-2">📚</div>
-            <div class="font-medium text-slate-700 dark:text-slate-300">学习研究</div>
-          </div>
-          <div class="p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 text-center">
-            <div class="text-3xl mb-2">🎮</div>
-            <div class="font-medium text-slate-700 dark:text-slate-300">游戏</div>
-          </div>
-          <div class="p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 text-center">
-            <div class="text-3xl mb-2">🎵</div>
-            <div class="font-medium text-slate-700 dark:text-slate-300">音乐</div>
-          </div>
-          <div class="p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 text-center">
-            <div class="text-3xl mb-2">📖</div>
-            <div class="font-medium text-slate-700 dark:text-slate-300">阅读</div>
-          </div>
-          <div class="p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 text-center">
-            <div class="text-3xl mb-2">✍️</div>
-            <div class="font-medium text-slate-700 dark:text-slate-300">写作</div>
-          </div>
-        </div>
+      <div class="about-section">
+        <p>你好，欢迎来到我的个人博客。</p>
+        <p>这里记录我的技术学习笔记与生活感悟，希望能对有需要的人有所帮助。</p>
       </div>
 
-      <div class="glass-card rounded-3xl p-8">
-        <h2 class="text-2xl font-bold mb-4 text-slate-900 dark:text-white flex items-center gap-2">
-          <span>🌐</span>
-          <span>联系方式</span>
-        </h2>
-        <div class="space-y-4">
-          <a href="https://github.com/linhongyu3" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 transition-colors">
-            <div class="text-2xl">🐙</div>
-            <div>
-              <div class="font-medium text-slate-900 dark:text-white">GitHub</div>
-              <div class="text-sm text-slate-500 dark:text-slate-400">@linhongyu3</div>
-            </div>
+      <div class="about-section">
+        <h2 class="section-title">联系我</h2>
+        <div class="contact-list">
+          <a href="https://github.com/linhongyu3" target="_blank" rel="noopener noreferrer" class="contact-item">
+            GitHub · @linhongyu3
           </a>
-          <a href="mailto:linhongyu3@outlook.com" class="flex items-center gap-4 p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 transition-colors">
-            <div class="text-2xl">📧</div>
-            <div>
-              <div class="font-medium text-slate-900 dark:text-white">Email</div>
-              <div class="text-sm text-slate-500 dark:text-slate-400">linhongyu3@outlook.com</div>
-            </div>
+          <a href="mailto:linhongyu3@outlook.com" class="contact-item">
+            邮箱 · linhongyu3@outlook.com
           </a>
         </div>
       </div>
 
-      <div class="glass-card rounded-3xl p-8">
-        <h2 class="text-2xl font-bold mb-4 text-slate-900 dark:text-white flex items-center gap-2">
-          <span>🛠️</span>
-          <span>关于本站</span>
-        </h2>
-        <div class="prose-content">
-          <p>本博客使用 <strong>Astro</strong> + <strong>Tailwind CSS</strong> 构建，支持 GitHub Pages 静态部署。</p>
-          <p>主要特点：</p>
-          <ul>
-            <li>✨ 现代化玻璃拟态设计</li>
-            <li>🌙 深色/浅色主题切换</li>
-            <li>⚡ 极致的加载速度</li>
-            <li>📱 完美的移动端适配</li>
-            <li>⬇️ 内置下载中心与镜像加速</li>
-          </ul>
-        </div>
+      <div class="about-section">
+        <h2 class="section-title">关于本站</h2>
+        <p>本站使用 Astro 构建，部署于 GitHub Pages。</p>
+        <p>采用简洁的排版设计，专注于内容本身。</p>
       </div>
     </div>
-  </section>
+  </div>
 </BaseLayout>
+
+<style>
+  .page-wrap {
+    padding: 3rem 0 2rem;
+  }
+
+  .page-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .about-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .about-section p {
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin: 0 0 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .contact-item {
+    font-size: 0.9rem;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .contact-item:hover {
+    text-decoration: underline;
+  }
+</style>

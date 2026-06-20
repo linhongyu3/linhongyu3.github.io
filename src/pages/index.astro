@@ -12,71 +12,154 @@ const recentPosts = posts.slice(0, 6);
 
 <BaseLayout title="首页" description="lhy 的个人博客，记录技术学习笔记与生活感悟">
   <Hero
-    title="Hello, I'm lhy"
-    subtitle="在这里分享技术笔记、编程心得与生活的点点滴滴。"
-    tagline="✨ 欢迎来到我的个人空间"
+    title="你好，我是 lhy"
+    subtitle="在这里记录技术学习笔记与生活感悟，慢慢积累，慢慢成长。"
   />
 
-  <section class="px-4 pb-12">
-    <div class="max-w-5xl mx-auto">
-      <div class="flex items-end justify-between mb-8">
-        <div>
-          <h2 class="text-3xl font-bold gradient-text mb-2">📝 最新文章</h2>
-          <p class="text-slate-600 dark:text-slate-400">记录学习与思考的点滴</p>
-        </div>
-        <a href="/blog/" class="btn-secondary hidden sm:inline-flex">
-          查看全部 →
-        </a>
+  <section class="page-section">
+    <div class="page-inner">
+      <div class="section-header">
+        <h2 class="section-title">最新文章</h2>
+        <a href="/blog/" class="section-more">查看全部</a>
       </div>
 
       {recentPosts.length > 0 ? (
-        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div class="posts-grid">
           {recentPosts.map((post) => {
             const slug = post.file.split('/').pop().replace('.md', '');
             return (
-              <a href={`/blog/${slug}/`}>
-                <PostCard
-                  title={post.frontmatter.title}
-                  description={post.frontmatter.description}
-                  pubDate={post.frontmatter.pubDate}
-                  slug={slug}
-                  tags={post.frontmatter.tags}
-                  categories={post.frontmatter.categories}
-                />
-              </a>
+              <PostCard
+                title={post.frontmatter.title}
+                description={post.frontmatter.description}
+                pubDate={post.frontmatter.pubDate}
+                slug={slug}
+                tags={post.frontmatter.tags}
+                categories={post.frontmatter.categories}
+              />
             );
           })}
         </div>
       ) : (
-        <div class="glass-card rounded-3xl p-12 text-center">
-          <div class="text-6xl mb-4">📭</div>
-          <p class="text-slate-600 dark:text-slate-400">还没有文章，敬请期待！</p>
+        <div class="empty-state">
+          <p>还没有文章，敬请期待。</p>
         </div>
       )}
     </div>
   </section>
 
-  <section class="px-4 pb-12">
-    <div class="max-w-5xl mx-auto">
-      <div class="grid gap-6 md:grid-cols-3">
-        <a href="/blog/" class="glass-card rounded-3xl p-8 text-center hover:scale-105 transition-transform">
-          <div class="text-5xl mb-4">📚</div>
-          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">博客文章</h3>
-          <p class="text-slate-600 dark:text-slate-400 text-sm">{posts.length} 篇技术笔记与感悟</p>
+  <section class="page-section">
+    <div class="page-inner">
+      <div class="section-header">
+        <h2 class="section-title">快速导航</h2>
+      </div>
+      <div class="nav-grid">
+        <a href="/blog/" class="nav-card">
+          <div class="nav-card-title">博客</div>
+          <div class="nav-card-desc">{posts.length} 篇文章</div>
         </a>
-
-        <a href="/downloads/" class="glass-card rounded-3xl p-8 text-center hover:scale-105 transition-transform">
-          <div class="text-5xl mb-4">⬇️</div>
-          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">软件下载</h3>
-          <p class="text-slate-600 dark:text-slate-400 text-sm">自制工具与精选软件</p>
+        <a href="/downloads/" class="nav-card">
+          <div class="nav-card-title">下载</div>
+          <div class="nav-card-desc">工具与软件</div>
         </a>
-
-        <a href="/about/" class="glass-card rounded-3xl p-8 text-center hover:scale-105 transition-transform">
-          <div class="text-5xl mb-4">👋</div>
-          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">关于我</h3>
-          <p class="text-slate-600 dark:text-slate-400 text-sm">了解更多关于我的故事</p>
+        <a href="/about/" class="nav-card">
+          <div class="nav-card-title">关于</div>
+          <div class="nav-card-desc">了解更多</div>
         </a>
       </div>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .page-section {
+    padding: 2rem 0;
+  }
+
+  .page-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .section-more {
+    font-size: 0.82rem;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .section-more:hover {
+    text-decoration: underline;
+  }
+
+  .posts-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .posts-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+  }
+
+  .nav-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 480px) {
+    .nav-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .nav-card {
+    padding: 1.25rem;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .nav-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+  }
+
+  .nav-card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+
+  .nav-card-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+</style>

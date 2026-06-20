@@ -2,35 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import DownloadCard from '../components/DownloadCard.astro';
 
-interface Mirror {
-  name: string;
-  url: string;
-  default?: boolean;
-}
-
-interface DownloadItem {
-  name: string;
-  description?: string;
-  category: 'self-made' | 'repost';
-  download_url: string;
-  size?: string;
-  version?: string;
-  date?: string;
-  group?: string;
-}
-
-const mirrors: Mirror[] = [
-  { name: 'gh-proxy v6', url: 'https://v6.gh-proxy.org/', default: true },
-  { name: 'gh-proxy v1', url: 'https://v1.gh-proxy.org/' },
-  { name: 'ghproxy.com', url: 'https://ghproxy.com/' },
-  { name: 'mirror.ghproxy', url: 'https://mirror.ghproxy.com/' },
-  { name: 'moeyy', url: 'https://gh.api.99988866.xyz/' }
-];
-
-// 读取下载内容
 const downloadFiles = await Astro.glob('../content/downloads/*.md');
 
-const downloads: DownloadItem[] = downloadFiles.map((file) => ({
+const downloads = downloadFiles.map((file) => ({
   name: file.frontmatter.name,
   description: file.frontmatter.description,
   category: file.frontmatter.category || 'repost',
@@ -41,45 +15,30 @@ const downloads: DownloadItem[] = downloadFiles.map((file) => ({
   group: file.frontmatter.group
 }));
 
-// 按分组
 const groups = [...new Set(downloads.map((d) => d.group).filter(Boolean))];
 const ungrouped = downloads.filter((d) => !d.group);
 ---
 
-<BaseLayout title="下载中心" description="自制工具与精选软件下载">
-  <section class="pt-28 pb-8 px-4">
-    <div class="max-w-5xl mx-auto text-center">
-      <h1 class="text-5xl font-black gradient-text mb-4">⬇️ 下载中心</h1>
-      <p class="text-xl text-slate-600 dark:text-slate-400">自制工具与精选软件</p>
-      <p class="mt-4 text-slate-500 dark:text-slate-500">共 {downloads.length} 个项目</p>
-    </div>
-  </section>
-
-  <section class="px-4 pb-8">
-    <div class="max-w-5xl mx-auto">
-      <div class="glass-card rounded-2xl p-4 flex flex-wrap items-center gap-3">
-        <span class="text-sm text-slate-500 dark:text-slate-400">🔍 筛选：</span>
-        <div class="flex flex-wrap gap-2" id="filter-bar">
-          <button class="filter-btn active px-3 py-1.5 rounded-lg text-sm font-medium transition-all bg-gradient-to-r from-brand-500 to-purple-500 text-white" data-filter="all">全部</button>
-          <button class="filter-btn px-3 py-1.5 rounded-lg text-sm font-medium transition-all bg-white/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700" data-filter="self-made">🛠️ 自制</button>
-          <button class="filter-btn px-3 py-1.5 rounded-lg text-sm font-medium transition-all bg-white/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700" data-filter="repost">📦 转载</button>
-        </div>
+<BaseLayout title="下载" description="工具与软件">
+  <div class="page-wrap">
+    <div class="page-inner">
+      <div class="page-header">
+        <h1 class="page-title">下载</h1>
+        <p class="page-subtitle">共 {downloads.length} 个项目</p>
       </div>
-    </div>
-  </section>
 
-  <section class="px-4 pb-12">
-    <div class="max-w-5xl mx-auto space-y-8">
-      {groups.length > 0 && groups.map((groupName) => {
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="self-made">自制</button>
+        <button class="filter-btn" data-filter="repost">转载</button>
+      </div>
+
+      {groups.map((groupName) => {
         const groupItems = downloads.filter((d) => d.group === groupName);
         return (
-          <div class="download-group" data-group={groupName}>
-            <h2 class="text-2xl font-bold mb-4 text-slate-900 dark:text-white flex items-center gap-2">
-              <span>📁</span>
-              <span>{groupName}</span>
-              <span class="text-sm font-normal text-slate-500 dark:text-slate-400">（{groupItems.length}）</span>
-            </h2>
-            <div class="grid gap-6 md:grid-cols-2">
+          <div class="dl-group" data-group={groupName}>
+            <h2 class="group-title">{groupName}</h2>
+            <div class="dl-grid">
               {groupItems.map((item) => (
                 <DownloadCard
                   name={item.name}
@@ -89,7 +48,6 @@ const ungrouped = downloads.filter((d) => !d.group);
                   date={item.date}
                   category={item.category}
                   downloadUrl={item.download_url}
-                  mirrors={mirrors}
                 />
               ))}
             </div>
@@ -98,14 +56,9 @@ const ungrouped = downloads.filter((d) => !d.group);
       })}
 
       {ungrouped.length > 0 && (
-        <div class="download-group">
-          {groups.length > 0 && (
-            <h2 class="text-2xl font-bold mb-4 text-slate-900 dark:text-white flex items-center gap-2">
-              <span>📂</span>
-              <span>其他</span>
-            </h2>
-          )}
-          <div class="grid gap-6 md:grid-cols-2">
+        <div class="dl-group">
+          {groups.length > 0 && <h2 class="group-title">其他</h2>}
+          <div class="dl-grid">
             {ungrouped.map((item) => (
               <DownloadCard
                 name={item.name}
@@ -115,7 +68,6 @@ const ungrouped = downloads.filter((d) => !d.group);
                 date={item.date}
                 category={item.category}
                 downloadUrl={item.download_url}
-                mirrors={mirrors}
               />
             ))}
           </div>
@@ -123,96 +75,104 @@ const ungrouped = downloads.filter((d) => !d.group);
       )}
 
       {downloads.length === 0 && (
-        <div class="glass-card rounded-3xl p-12 text-center">
-          <div class="text-6xl mb-4">📭</div>
-          <p class="text-slate-600 dark:text-slate-400 text-lg">暂无下载内容，敬请期待！</p>
+        <div class="empty-state">
+          <p>暂无内容，敬请期待。</p>
         </div>
       )}
     </div>
-  </section>
+  </div>
 </BaseLayout>
 
+<style>
+  .page-wrap {
+    padding: 3rem 0 2rem;
+  }
+
+  .page-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .page-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .page-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .filter-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .dl-group {
+    margin-bottom: 2.5rem;
+  }
+
+  .group-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dl-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .dl-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem;
+    color: var(--text-muted);
+  }
+</style>
+
 <script is:inline>
-  // 筛选功能
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const items = document.querySelectorAll('.download-item');
-  const groups = document.querySelectorAll('.download-group');
+  var btns = document.querySelectorAll('.filter-btn');
+  var items = document.querySelectorAll('.download-card');
+  var groups = document.querySelectorAll('.dl-group');
 
-  filterBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const filter = btn.getAttribute('data-filter');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var filter = btn.getAttribute('data-filter');
+      btns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
 
-      filterBtns.forEach((b) => {
-        b.classList.remove('active', 'bg-gradient-to-r', 'from-brand-500', 'to-purple-500', 'text-white');
-        b.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-300');
+      items.forEach(function(item) {
+        var cat = item.getAttribute('data-category') || 'repost';
+        var cls = filter === 'all' || cat === filter ? '' : 'none';
+        item.style.display = cls;
       });
 
-      btn.classList.add('active', 'bg-gradient-to-r', 'from-brand-500', 'to-purple-500', 'text-white');
-      btn.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-300');
-
-      items.forEach((item) => {
-        const cat = item.getAttribute('data-category');
-        if (filter === 'all' || cat === filter) {
-          item.style.display = '';
-        } else {
-          item.style.display = 'none';
+      groups.forEach(function(g) {
+        var visible = g.querySelectorAll('.download-card[style!="display: none"]');
+        if (visible.length === 0 && !g.querySelector('.group-title')) {
+          var allItems = g.querySelectorAll('.download-card');
+          if (allItems.length === 0) g.style.display = 'none';
         }
       });
-
-      // 检查分组是否还有显示项
-      groups.forEach((group) => {
-        const visibleItems = group.querySelectorAll('.download-item:not([style*="display: none"])');
-        if (visibleItems.length === 0) {
-          group.style.display = 'none';
-        } else {
-          group.style.display = '';
-        }
-      });
-    });
-  });
-
-  // 镜像源选择 - 动态填充下拉框
-  const mirrorsData = [
-    { name: 'gh-proxy v6', url: 'https://v6.gh-proxy.org/' },
-    { name: 'gh-proxy v1', url: 'https://v1.gh-proxy.org/' },
-    { name: 'ghproxy.com', url: 'https://ghproxy.com/' },
-    { name: 'mirror.ghproxy', url: 'https://mirror.ghproxy.com/' },
-    { name: 'moeyy', url: 'https://gh.api.99988866.xyz/' }
-  ];
-
-  document.querySelectorAll('.mirror-select').forEach((select) => {
-    mirrorsData.forEach((m) => {
-      const opt = document.createElement('option');
-      opt.value = m.url;
-      opt.textContent = m.name;
-      if (m.default) opt.selected = true;
-      select.appendChild(opt);
-    });
-  });
-
-  // 更新下载链接
-  document.querySelectorAll('.mirror-select').forEach((select) => {
-    select.addEventListener('change', () => {
-      const mirrorUrl = select.value;
-      const card = select.closest('.download-item');
-      const downloadBtn = card?.querySelector('.download-btn');
-      const originalUrl = downloadBtn?.getAttribute('data-original-url');
-      if (originalUrl) {
-        if (mirrorUrl && originalUrl.includes('github.com')) {
-          downloadBtn.href = mirrorUrl + originalUrl;
-        } else {
-          downloadBtn.href = originalUrl;
-        }
-      }
-    });
-  });
-
-  // 默认应用默认镜像源
-  window.addEventListener('load', () => {
-    document.querySelectorAll('.mirror-select').forEach((select) => {
-      if (select.value) {
-        select.dispatchEvent(new Event('change'));
-      }
     });
   });
 </script>

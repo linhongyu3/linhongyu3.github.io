@@ -2,64 +2,113 @@
 import BaseLayout from './BaseLayout.astro';
 
 const { frontmatter } = Astro.props;
-const { title, description, pubDate, updatedDate, categories, tags } = frontmatter;
+const { title, description, pubDate, categories, tags } = frontmatter;
 
 const formattedDate = new Date(pubDate).toLocaleDateString('zh-CN', {
   year: 'numeric',
   month: 'long',
   day: 'numeric'
 });
-const readingTime = '约 ' + Math.max(1, Math.round(Astro.props.content?.length / 500 || 3)) + ' 分钟阅读';
 ---
 
 <BaseLayout title={title} description={description}>
-  <article class="pt-28 pb-12 px-4">
-    <div class="max-w-3xl mx-auto">
-      <div class="text-center mb-12">
-        {categories && categories.length > 0 && (
-          <div class="flex flex-wrap justify-center gap-2 mb-4">
-            {categories.map((cat) => (
-              <span class="tag-chip">{cat}</span>
+  <div class="post-wrap">
+    <div class="post-inner">
+      <header class="post-header">
+        <h1 class="post-title">{title}</h1>
+        {description && (
+          <p class="post-desc">{description}</p>
+        )}
+        <div class="post-meta">
+          <span>{formattedDate}</span>
+          {categories && categories.length > 0 && (
+            <>
+              <span class="meta-sep">&middot;</span>
+              <span>{categories.join(', ')}</span>
+            </>
+          )}
+        </div>
+        {tags && tags.length > 0 && (
+          <div class="post-tags">
+            {tags.map((tag) => (
+              <span class="tag">#{tag}</span>
             ))}
           </div>
         )}
-        <h1 class="text-4xl md:text-5xl font-black gradient-text mb-6 leading-tight">{title}</h1>
-        {description && (
-          <p class="text-lg text-slate-600 dark:text-slate-400 mb-6">{description}</p>
-        )}
-        <div class="flex flex-wrap items-center justify-center gap-4 text-sm text-slate-500 dark:text-slate-400">
-          <span class="flex items-center gap-1">
-            <span>📅</span>
-            <span>{formattedDate}</span>
-          </span>
-          <span class="flex items-center gap-1">
-            <span>⏱️</span>
-            <span>{readingTime}</span>
-          </span>
-        </div>
-      </div>
+      </header>
 
-      {tags && tags.length > 0 && (
-        <div class="glass-card rounded-2xl p-4 mb-8 flex flex-wrap items-center gap-2">
-          <span class="text-sm text-slate-500 dark:text-slate-400 mr-2">标签：</span>
-          {tags.map((tag) => (
-            <span class="tag-chip">#{tag}</span>
-          ))}
-        </div>
-      )}
+      <article class="prose-content">
+        <slot />
+      </article>
 
-      <div class="glass-card rounded-3xl p-6 md:p-10">
-        <div class="prose-content">
-          <slot />
-        </div>
-      </div>
-
-      <div class="mt-8 text-center">
-        <a href="/blog/" class="btn-secondary inline-flex items-center gap-2">
-          <span>←</span>
-          <span>返回博客列表</span>
-        </a>
-      </div>
+      <footer class="post-footer">
+        <a href="/blog/" class="back-link">&larr; 返回博客</a>
+      </footer>
     </div>
-  </article>
+  </div>
 </BaseLayout>
+
+<style>
+  .post-wrap {
+    padding: 3rem 0 2rem;
+  }
+
+  .post-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .post-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .post-title {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 0.75rem;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+  }
+
+  .post-desc {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    margin: 0 0 1rem;
+    line-height: 1.6;
+  }
+
+  .post-meta {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .meta-sep {
+    margin: 0 0.4rem;
+    color: var(--border);
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .post-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .back-link {
+    font-size: 0.88rem;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+</style>

@@ -7,59 +7,99 @@ const posts = (await Astro.glob('../../content/posts/*.md')).sort(
 );
 
 const allTags = [...new Set(posts.flatMap((p) => p.frontmatter.tags || []))];
-const allCategories = [...new Set(posts.flatMap((p) => p.frontmatter.categories || []))];
 ---
 
 <BaseLayout title="博客" description="技术笔记与生活感悟">
-  <section class="pt-28 pb-8 px-4">
-    <div class="max-w-5xl mx-auto text-center">
-      <h1 class="text-5xl font-black gradient-text mb-4">📝 博客</h1>
-      <p class="text-xl text-slate-600 dark:text-slate-400">记录学习与思考的点滴</p>
-      <p class="mt-4 text-slate-500 dark:text-slate-500">共 {posts.length} 篇文章</p>
-    </div>
-  </section>
-
-  {allCategories.length > 0 && (
-    <section class="px-4 pb-8">
-      <div class="max-w-5xl mx-auto">
-        <div class="glass-card rounded-2xl p-4">
-          <div class="text-sm text-slate-500 dark:text-slate-400 mb-2">分类</div>
-          <div class="flex flex-wrap gap-2">
-            {allCategories.map((cat) => (
-              <span class="tag-chip cursor-pointer">{cat}</span>
-            ))}
-          </div>
-        </div>
+  <div class="page-wrap">
+    <div class="page-inner">
+      <div class="page-header">
+        <h1 class="page-title">博客</h1>
+        <p class="page-subtitle">共 {posts.length} 篇文章</p>
       </div>
-    </section>
-  )}
 
-  <section class="px-4 pb-12">
-    <div class="max-w-5xl mx-auto">
+      {allTags.length > 0 && (
+        <div class="tags-row">
+          {allTags.map((tag) => (
+            <span class="tag">#{tag}</span>
+          ))}
+        </div>
+      )}
+
       {posts.length > 0 ? (
-        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div class="posts-list">
           {posts.map((post) => {
             const slug = post.file.split('/').pop().replace('.md', '');
             return (
-              <a href={`/blog/${slug}/`}>
-                <PostCard
-                  title={post.frontmatter.title}
-                  description={post.frontmatter.description}
-                  pubDate={post.frontmatter.pubDate}
-                  slug={slug}
-                  tags={post.frontmatter.tags}
-                  categories={post.frontmatter.categories}
-                />
-              </a>
+              <PostCard
+                title={post.frontmatter.title}
+                description={post.frontmatter.description}
+                pubDate={post.frontmatter.pubDate}
+                slug={slug}
+                tags={post.frontmatter.tags}
+                categories={post.frontmatter.categories}
+              />
             );
           })}
         </div>
       ) : (
-        <div class="glass-card rounded-3xl p-12 text-center">
-          <div class="text-6xl mb-4">📭</div>
-          <p class="text-slate-600 dark:text-slate-400 text-lg">还没有文章，敬请期待！</p>
+        <div class="empty-state">
+          <p>还没有文章，敬请期待。</p>
         </div>
       )}
     </div>
-  </section>
+  </div>
 </BaseLayout>
+
+<style>
+  .page-wrap {
+    padding: 3rem 0 2rem;
+  }
+
+  .page-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .page-header {
+    margin-bottom: 2rem;
+  }
+
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .page-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .posts-list {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .posts-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem;
+    color: var(--text-muted);
+  }
+</style>
