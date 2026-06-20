@@ -21,11 +21,13 @@ const pageDescription = description || 'lhy 的个人博客，记录技术学习
 
     <script is:inline>
       // 在页面渲染前应用主题，避免闪烁
-      const savedTheme = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      }
+      (function() {
+        const t = localStorage.getItem('theme');
+        const p = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (t === 'dark' || (!t && p)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
     </script>
 
     <!-- Open Graph -->
