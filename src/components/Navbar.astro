@@ -1,0 +1,100 @@
+---
+const pathname = Astro.url.pathname;
+const navItems = [
+  { href: '/', label: '首页', icon: '🏠' },
+  { href: '/blog/', label: '博客', icon: '📝' },
+  { href: '/downloads/', label: '下载', icon: '⬇️' },
+  { href: '/about/', label: '关于', icon: '👤' }
+];
+---
+
+<nav class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl">
+  <div class="glass-card rounded-2xl px-6 py-3">
+    <div class="flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 font-bold text-lg">
+        <span class="text-2xl">✨</span>
+        <span class="gradient-text">lhy 的笔记</span>
+      </a>
+
+      <div class="hidden md:flex items-center gap-1">
+        {navItems.map((item) => (
+          <a
+            href={item.href}
+            class={`nav-link ${(pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))) ? 'active' : ''}`}
+          >
+            <span class="mr-1">{item.icon}</span>
+            {item.label}
+          </a>
+        ))}
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          id="theme-toggle"
+          class="w-10 h-10 rounded-xl bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-110 transition-transform"
+          aria-label="切换主题"
+        >
+          <span id="theme-icon" class="text-lg">🌙</span>
+        </button>
+
+        <div class="md:hidden">
+          <button
+            id="mobile-menu-btn"
+            class="w-10 h-10 rounded-xl bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-center"
+            aria-label="菜单"
+          >
+            <span class="text-lg">☰</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+      <div class="flex flex-col gap-1">
+        {navItems.map((item) => (
+          <a
+            href={item.href}
+            class={`nav-link ${(pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))) ? 'active' : ''}`}
+          >
+            <span class="mr-2">{item.icon}</span>
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script is:inline>
+  // 主题切换
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      themeIcon.textContent = '☀️';
+    } else {
+      document.documentElement.classList.remove('dark');
+      themeIcon.textContent = '🌙';
+    }
+  }
+
+  // 初始化主题
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+
+  themeToggle?.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    const newTheme = isDark ? 'light' : 'dark';
+    applyTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+  });
+
+  mobileMenuBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
+  });
+</script>

@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+
+const posts = (await Astro.glob('../../content/posts/*.md')).sort(
+  (a, b) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime()
+);
+
+const allTags = [...new Set(posts.flatMap((p) => p.frontmatter.tags || []))];
+const allCategories = [...new Set(posts.flatMap((p) => p.frontmatter.categories || []))];
+---
+
+<BaseLayout title="博客" description="技术笔记与生活感悟">
+  <section class="pt-28 pb-8 px-4">
+    <div class="max-w-5xl mx-auto text-center">
+      <h1 class="text-5xl font-black gradient-text mb-4">📝 博客</h1>
+      <p class="text-xl text-slate-600 dark:text-slate-400">记录学习与思考的点滴</p>
+      <p class="mt-4 text-slate-500 dark:text-slate-500">共 {posts.length} 篇文章</p>
+    </div>
+  </section>
+
+  {allCategories.length > 0 && (
+    <section class="px-4 pb-8">
+      <div class="max-w-5xl mx-auto">
+        <div class="glass-card rounded-2xl p-4">
+          <div class="text-sm text-slate-500 dark:text-slate-400 mb-2">分类</div>
+          <div class="flex flex-wrap gap-2">
+            {allCategories.map((cat) => (
+              <span class="tag-chip cursor-pointer">{cat}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="px-4 pb-12">
+    <div class="max-w-5xl mx-auto">
+      {posts.length > 0 ? (
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post) => {
+            const slug = post.file.split('/').pop().replace('.md', '');
+            return (
+              <a href={`/blog/${slug}/`}>
+                <PostCard
+                  title={post.frontmatter.title}
+                  description={post.frontmatter.description}
+                  pubDate={post.frontmatter.pubDate}
+                  slug={slug}
+                  tags={post.frontmatter.tags}
+                  categories={post.frontmatter.categories}
+                />
+              </a>
+            );
+          })}
+        </div>
+      ) : (
+        <div class="glass-card rounded-3xl p-12 text-center">
+          <div class="text-6xl mb-4">📭</div>
+          <p class="text-slate-600 dark:text-slate-400 text-lg">还没有文章，敬请期待！</p>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

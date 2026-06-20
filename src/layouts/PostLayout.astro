@@ -1,0 +1,65 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+const { frontmatter } = Astro.props;
+const { title, description, pubDate, updatedDate, categories, tags } = frontmatter;
+
+const formattedDate = new Date(pubDate).toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+const readingTime = '约 ' + Math.max(1, Math.round(Astro.props.content?.length / 500 || 3)) + ' 分钟阅读';
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="pt-28 pb-12 px-4">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-12">
+        {categories && categories.length > 0 && (
+          <div class="flex flex-wrap justify-center gap-2 mb-4">
+            {categories.map((cat) => (
+              <span class="tag-chip">{cat}</span>
+            ))}
+          </div>
+        )}
+        <h1 class="text-4xl md:text-5xl font-black gradient-text mb-6 leading-tight">{title}</h1>
+        {description && (
+          <p class="text-lg text-slate-600 dark:text-slate-400 mb-6">{description}</p>
+        )}
+        <div class="flex flex-wrap items-center justify-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+          <span class="flex items-center gap-1">
+            <span>📅</span>
+            <span>{formattedDate}</span>
+          </span>
+          <span class="flex items-center gap-1">
+            <span>⏱️</span>
+            <span>{readingTime}</span>
+          </span>
+        </div>
+      </div>
+
+      {tags && tags.length > 0 && (
+        <div class="glass-card rounded-2xl p-4 mb-8 flex flex-wrap items-center gap-2">
+          <span class="text-sm text-slate-500 dark:text-slate-400 mr-2">标签：</span>
+          {tags.map((tag) => (
+            <span class="tag-chip">#{tag}</span>
+          ))}
+        </div>
+      )}
+
+      <div class="glass-card rounded-3xl p-6 md:p-10">
+        <div class="prose-content">
+          <slot />
+        </div>
+      </div>
+
+      <div class="mt-8 text-center">
+        <a href="/blog/" class="btn-secondary inline-flex items-center gap-2">
+          <span>←</span>
+          <span>返回博客列表</span>
+        </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

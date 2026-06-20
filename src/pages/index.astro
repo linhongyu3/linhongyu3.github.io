@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import PostCard from '../components/PostCard.astro';
+
+const posts = (await Astro.glob('../content/posts/*.md')).sort(
+  (a, b) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime()
+);
+
+const recentPosts = posts.slice(0, 6);
+---
+
+<BaseLayout title="首页" description="lhy 的个人博客，记录技术学习笔记与生活感悟">
+  <Hero
+    title="Hello, I'm lhy"
+    subtitle="在这里分享技术笔记、编程心得与生活的点点滴滴。"
+    tagline="✨ 欢迎来到我的个人空间"
+  />
+
+  <section class="px-4 pb-12">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-end justify-between mb-8">
+        <div>
+          <h2 class="text-3xl font-bold gradient-text mb-2">📝 最新文章</h2>
+          <p class="text-slate-600 dark:text-slate-400">记录学习与思考的点滴</p>
+        </div>
+        <a href="/blog/" class="btn-secondary hidden sm:inline-flex">
+          查看全部 →
+        </a>
+      </div>
+
+      {recentPosts.length > 0 ? (
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {recentPosts.map((post) => {
+            const slug = post.file.split('/').pop().replace('.md', '');
+            return (
+              <a href={`/blog/${slug}/`}>
+                <PostCard
+                  title={post.frontmatter.title}
+                  description={post.frontmatter.description}
+                  pubDate={post.frontmatter.pubDate}
+                  slug={slug}
+                  tags={post.frontmatter.tags}
+                  categories={post.frontmatter.categories}
+                />
+              </a>
+            );
+          })}
+        </div>
+      ) : (
+        <div class="glass-card rounded-3xl p-12 text-center">
+          <div class="text-6xl mb-4">📭</div>
+          <p class="text-slate-600 dark:text-slate-400">还没有文章，敬请期待！</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="px-4 pb-12">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid gap-6 md:grid-cols-3">
+        <a href="/blog/" class="glass-card rounded-3xl p-8 text-center hover:scale-105 transition-transform">
+          <div class="text-5xl mb-4">📚</div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">博客文章</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm">{posts.length} 篇技术笔记与感悟</p>
+        </a>
+
+        <a href="/downloads/" class="glass-card rounded-3xl p-8 text-center hover:scale-105 transition-transform">
+          <div class="text-5xl mb-4">⬇️</div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">软件下载</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm">自制工具与精选软件</p>
+        </a>
+
+        <a href="/about/" class="glass-card rounded-3xl p-8 text-center hover:scale-105 transition-transform">
+          <div class="text-5xl mb-4">👋</div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">关于我</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm">了解更多关于我的故事</p>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
