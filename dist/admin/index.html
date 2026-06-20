@@ -1,0 +1,215 @@
+<!DOCTYPE html><html lang="zh-CN" class="scroll-smooth"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="文章和下载项管理后台"><meta name="generator" content="Astro v4.16.19"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>"><title>文章管理 | lhy 的笔记</title><script>
+      // 在页面渲染前应用主题，避免闪烁
+      (function() {
+        const t = localStorage.getItem('theme');
+        const p = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (t === 'dark' || (!t && p)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script><!-- Open Graph --><meta property="og:title" content="文章管理 | lhy 的笔记"><meta property="og:description" content="文章和下载项管理后台"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/about.CRMAA8l8.css">
+<link rel="stylesheet" href="/_astro/_slug_.-MyCoUJz.css">
+<style>.admin-wrap[data-astro-cid-2zp6q64z]{padding:3rem 0 2rem}.admin-inner[data-astro-cid-2zp6q64z]{max-width:900px;margin:0 auto;padding:0 1.5rem}.admin-header[data-astro-cid-2zp6q64z]{margin-bottom:2rem}.admin-title[data-astro-cid-2zp6q64z]{font-size:1.75rem;font-weight:700;color:var(--text-primary);margin:0 0 .5rem;letter-spacing:-.02em}.admin-subtitle[data-astro-cid-2zp6q64z]{font-size:.88rem;color:var(--text-muted);margin:0}.admin-subtitle[data-astro-cid-2zp6q64z] code[data-astro-cid-2zp6q64z]{background-color:var(--bg-secondary);padding:.1rem .4rem;border-radius:4px;font-size:.82em;border:1px solid var(--border)}.tab-bar[data-astro-cid-2zp6q64z]{display:flex;gap:.25rem;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}.tab-btn[data-astro-cid-2zp6q64z]{padding:.5rem 1.25rem;font-size:.88rem;background:transparent;color:var(--text-muted);border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .2s;font-family:inherit}.tab-btn[data-astro-cid-2zp6q64z]:hover{color:var(--text-primary)}.tab-btn[data-astro-cid-2zp6q64z].active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}.card[data-astro-cid-2zp6q64z]{background-color:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;padding:1.75rem;margin-bottom:1.5rem}.card-title-sm[data-astro-cid-2zp6q64z]{font-size:1rem;font-weight:600;color:var(--text-primary);margin:0 0 1.25rem}.form-grid[data-astro-cid-2zp6q64z]{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}@media (max-width: 640px){.form-grid[data-astro-cid-2zp6q64z]{grid-template-columns:1fr}}.form-item[data-astro-cid-2zp6q64z]{display:flex;flex-direction:column;gap:.35rem}.form-item-full[data-astro-cid-2zp6q64z]{grid-column:1 / -1}.form-label[data-astro-cid-2zp6q64z]{font-size:.82rem;color:var(--text-secondary);font-weight:500}.form-input[data-astro-cid-2zp6q64z],.form-textarea[data-astro-cid-2zp6q64z]{padding:.6rem .8rem;font-size:.9rem;background-color:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border);border-radius:8px;transition:border-color .2s;font-family:inherit;outline:none;resize:vertical;min-width:0}.form-textarea[data-astro-cid-2zp6q64z]{font-family:JetBrains Mono,Fira Code,monospace;font-size:.85rem;line-height:1.6}.form-input[data-astro-cid-2zp6q64z]:focus,.form-textarea[data-astro-cid-2zp6q64z]:focus{border-color:var(--accent)}.form-actions[data-astro-cid-2zp6q64z]{display:flex;gap:.5rem;margin-top:1.5rem;flex-wrap:wrap}.preview-card[data-astro-cid-2zp6q64z]{padding:1.5rem}.preview-pre[data-astro-cid-2zp6q64z]{background-color:var(--bg-primary);border:1px solid var(--border);border-radius:8px;padding:1rem;font-size:.78rem;overflow-x:auto;color:var(--text-primary);font-family:JetBrains Mono,Fira Code,monospace;line-height:1.5;white-space:pre;max-height:500px;overflow:auto}.help-text[data-astro-cid-2zp6q64z]{font-size:.8rem;color:var(--text-muted);margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)}.help-text[data-astro-cid-2zp6q64z] code[data-astro-cid-2zp6q64z]{background-color:var(--bg-primary);padding:.1rem .4rem;border-radius:4px;font-size:.82em;border:1px solid var(--border)}
+</style></head> <body class="antialiased"> <header class="site-header" data-astro-cid-5blmo7yk> <div class="header-inner" data-astro-cid-5blmo7yk> <a href="/" class="site-name" data-astro-cid-5blmo7yk>lhy 的笔记</a> <nav class="main-nav" aria-label="主导航" data-astro-cid-5blmo7yk> <a href="/" class="nav-link " data-astro-cid-5blmo7yk> 首页 </a><a href="/blog/" class="nav-link " data-astro-cid-5blmo7yk> 博客 </a><a href="/downloads/" class="nav-link " data-astro-cid-5blmo7yk> 下载 </a><a href="/admin/" class="nav-link active" data-astro-cid-5blmo7yk> 管理 </a><a href="/about/" class="nav-link " data-astro-cid-5blmo7yk> 关于 </a> </nav> <div class="header-actions" data-astro-cid-5blmo7yk> <button id="theme-toggle" class="theme-btn" aria-label="切换主题" title="切换主题" data-astro-cid-5blmo7yk> <svg id="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;" data-astro-cid-5blmo7yk> <circle cx="12" cy="12" r="5" data-astro-cid-5blmo7yk></circle><line x1="12" y1="1" x2="12" y2="3" data-astro-cid-5blmo7yk></line><line x1="12" y1="21" x2="12" y2="23" data-astro-cid-5blmo7yk></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" data-astro-cid-5blmo7yk></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" data-astro-cid-5blmo7yk></line><line x1="1" y1="12" x2="3" y2="12" data-astro-cid-5blmo7yk></line><line x1="21" y1="12" x2="23" y2="12" data-astro-cid-5blmo7yk></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" data-astro-cid-5blmo7yk></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" data-astro-cid-5blmo7yk></line> </svg> <svg id="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-5blmo7yk> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" data-astro-cid-5blmo7yk></path> </svg> </button> <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="菜单" data-astro-cid-5blmo7yk> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-5blmo7yk> <line x1="3" y1="6" x2="21" y2="6" data-astro-cid-5blmo7yk></line><line x1="3" y1="12" x2="21" y2="12" data-astro-cid-5blmo7yk></line><line x1="3" y1="18" x2="21" y2="18" data-astro-cid-5blmo7yk></line> </svg> </button> </div> </div> <!-- 移动端菜单 --> <div id="mobile-menu" class="mobile-nav" style="display: none;" data-astro-cid-5blmo7yk> <a href="/" class="mobile-nav-link " data-astro-cid-5blmo7yk> 首页 </a><a href="/blog/" class="mobile-nav-link " data-astro-cid-5blmo7yk> 博客 </a><a href="/downloads/" class="mobile-nav-link " data-astro-cid-5blmo7yk> 下载 </a><a href="/admin/" class="mobile-nav-link active" data-astro-cid-5blmo7yk> 管理 </a><a href="/about/" class="mobile-nav-link " data-astro-cid-5blmo7yk> 关于 </a> </div> </header>  <script>
+  (function() {
+    var toggleBtn = document.getElementById('theme-toggle');
+    var iconSun = document.getElementById('icon-sun');
+    var iconMoon = document.getElementById('icon-moon');
+    var mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    var mobileMenu = document.getElementById('mobile-menu');
+
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+        if (iconSun) iconSun.style.display = 'block';
+        if (iconMoon) iconMoon.style.display = 'none';
+      } else {
+        document.documentElement.classList.remove('dark');
+        if (iconSun) iconSun.style.display = 'none';
+        if (iconMoon) iconMoon.style.display = 'block';
+      }
+    }
+
+    var saved = localStorage.getItem('theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+
+    toggleBtn && toggleBtn.addEventListener('click', function() {
+      var isDark = document.documentElement.classList.contains('dark');
+      applyTheme(isDark ? 'light' : 'dark');
+      localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    });
+
+    mobileMenuBtn && mobileMenuBtn.addEventListener('click', function() {
+      var current = mobileMenu && mobileMenu.style.display;
+      if (mobileMenu) {
+        mobileMenu.style.display = current === 'none' ? 'flex' : 'none';
+      }
+    });
+  })();
+</script> <main class="min-h-screen">  <div class="admin-wrap" data-astro-cid-2zp6q64z> <div class="admin-inner" data-astro-cid-2zp6q64z> <header class="admin-header" data-astro-cid-2zp6q64z> <h1 class="admin-title" data-astro-cid-2zp6q64z>文章管理</h1> <p class="admin-subtitle" data-astro-cid-2zp6q64z>编写文章与下载项，生成 Markdown 文件后放入 <code data-astro-cid-2zp6q64z>src/content/</code> 目录。</p> </header> <!-- 标签切换 --> <div class="tab-bar" data-astro-cid-2zp6q64z> <button class="tab-btn active" data-tab="posts" data-astro-cid-2zp6q64z>文章</button> <button class="tab-btn" data-tab="downloads" data-astro-cid-2zp6q64z>下载</button> </div> <!-- 文章管理视图 --> <section class="tab-pane active" data-pane="posts" data-astro-cid-2zp6q64z> <div class="card create-card" data-astro-cid-2zp6q64z> <h2 class="card-title-sm" data-astro-cid-2zp6q64z>新建文章</h2> <div class="form-grid" data-astro-cid-2zp6q64z> <div class="form-item" data-astro-cid-2zp6q64z> <label class="form-label" data-astro-cid-2zp6q64z>标题</label> <input type="text" id="post-title" class="form-input" placeholder="请输入标题" data-astro-cid-2zp6q64z> </div> <div class="form-item" data-astro-cid-2zp6q64z> <label class="form-label" data-astro-cid-2zp6q64z>发布日期</label> <input type="date" id="post-date" class="form-input" data-astro-cid-2zp6q64z> </div> <div class="form-item form-item-full" data-astro-cid-2zp6q64z> <label class="form-label" data-astro-cid-2zp6q64z>简短描述</label> <input type="text" id="post-desc" class="form-input" placeholder="文章摘要，显示在首页卡片中" data-astro-cid-2zp6q64z> </div> <div class="form-item" data-astro-cid-2zp6q64z> <label class="form-label" data-astro-cid-2zp6q64z>分类（英文逗号分隔，可留空）</label> <input type="text" id="post-cats" class="form-input" placeholder="例如：技术, 生活" data-astro-cid-2zp6q64z> </div> <div class="form-item" data-astro-cid-2zp6q64z> <label class="form-label" data-astro-cid-2zp6q64z>标签（英文逗号分隔）</label> <input type="text" id="post-tags" class="form-input" placeholder="例如：教程, 笔记" data-astro-cid-2zp6q64z> </div> <div class="form-item form-item-full" data-astro-cid-2zp6q64z> <label class="form-label" data-astro-cid-2zp6q64z>正文（Markdown）</label> <textarea id="post-body" class="form-textarea" rows="14" placeholder="# 一级标题
+
+这里是正文..." data-astro-cid-2zp6q64z></textarea> </div> </div> <div class="form-actions" data-astro-cid-2zp6q64z> <button class="btn-primary" id="btn-post-preview" data-astro-cid-2zp6q64z>预览</button> <button class="btn-primary" id="btn-post-download" data-astro-cid-2zp6q64z>下载 Markdown</button> <button class="btn-secondary" id="btn-post-clear" data-astro-cid-2zp6q64z>清空</button> </div> </div> <!-- 预览区域 --> <div class="card preview-card" id="post-preview-wrap" style="display: none;" data-astro-cid-2zp6q64z> <h2 class="card-title-sm" data-astro-cid-2zp6q64z>文件预览</h2> <pre id="post-preview-content" class="preview-pre" data-astro-cid-2zp6q64z></pre> <div class="form-actions" data-astro-cid-2zp6q64z> <button class="btn-primary" id="btn-post-download-2" data-astro-cid-2zp6q64z>下载 .md 文件</button> <button class="btn-secondary" id="btn-post-copy" data-astro-cid-2zp6q64z>复制内容</button> </div> <p class="help-text" data-astro-cid-2zp6q64z>
+下载后请将文件放入 <code data-astro-cid-2zp6q64z>src/content/posts/</code> 目录（文件名建议：2026-06-20-标题.md），然后提交到 GitHub 自动部署。
+</p> </div> </section> <!-- 下载管理视图 --> <section class="tab-pane" data-pane="downloads" style="display: none;" data-astro-cid-2zp6q64z> <div class="card create-card" data-astro-cid-2zp6q64z> <h2 class="card-title-sm" data-astro-cid-2zp6q64z>新建下载项</h2> <div class="form-grid" data-astro-cid-2zp6q64z> <div class="form-item" data-astro-cid-2zp6q64z> <label class="form-label" data-astro-cid-2zp6q64z>名称</label> <input type="text" id="dl-name" class="form-input" placeholder="例如：ClassRoomControl" data-astro-cid-2zp6q64z> </div> <div class="form-item" data-astro-cid-2zp6q64z> <label class="form-label" data-astro-cid-2zp6q64z>分类</label> <select id="dl-category" class="form-input" data-astro-cid-2zp6q64z> <option value="self-made" data-astro-cid-2zp6q64z>自制</option> <option value="repost" data-astro-cid-2zp6q64z>转载</option> </select> </div> <div class="form-item form-item-full" data-astro-cid-2zp6q64z> <label class="form-label" data-astro-cid-2zp6q64z>简短描述</label> <input type="text" id="dl-desc" class="form-input" placeholder="这是做什么用的" data-astro-cid-2zp6q64z> </div> <div class="form-item" data-astro-cid-2zp6q64z> <label class="form-label" data-astro-cid-2zp6q64z>版本号</label> <input type="text" id="dl-version" class="form-input" placeholder="例如：1.0.0" data-astro-cid-2zp6q64z> </div> <div class="form-item" data-astro-cid-2zp6q64z> <label class="form-label" data-astro-cid-2zp6q64z>文件大小</label> <input type="text" id="dl-size" class="form-input" placeholder="例如：55.8MB" data-astro-cid-2zp6q64z> </div> <div class="form-item" data-astro-cid-2zp6q64z> <label class="form-label" data-astro-cid-2zp6q64z>发布日期</label> <input type="date" id="dl-date" class="form-input" data-astro-cid-2zp6q64z> </div> <div class="form-item" data-astro-cid-2zp6q64z> <label class="form-label" data-astro-cid-2zp6q64z>分组（可留空）</label> <input type="text" id="dl-group" class="form-input" placeholder="例如：信息课脱离管控工具" data-astro-cid-2zp6q64z> </div> <div class="form-item form-item-full" data-astro-cid-2zp6q64z> <label class="form-label" data-astro-cid-2zp6q64z>下载链接</label> <input type="text" id="dl-url" class="form-input" placeholder="https://github.com/.../releases/download/.../file.exe" data-astro-cid-2zp6q64z> </div> </div> <div class="form-actions" data-astro-cid-2zp6q64z> <button class="btn-primary" id="btn-dl-preview" data-astro-cid-2zp6q64z>预览</button> <button class="btn-primary" id="btn-dl-download" data-astro-cid-2zp6q64z>下载 Markdown</button> <button class="btn-secondary" id="btn-dl-clear" data-astro-cid-2zp6q64z>清空</button> </div> </div> <div class="card preview-card" id="dl-preview-wrap" style="display: none;" data-astro-cid-2zp6q64z> <h2 class="card-title-sm" data-astro-cid-2zp6q64z>文件预览</h2> <pre id="dl-preview-content" class="preview-pre" data-astro-cid-2zp6q64z></pre> <div class="form-actions" data-astro-cid-2zp6q64z> <button class="btn-primary" id="btn-dl-download-2" data-astro-cid-2zp6q64z>下载 .md 文件</button> <button class="btn-secondary" id="btn-dl-copy" data-astro-cid-2zp6q64z>复制内容</button> </div> <p class="help-text" data-astro-cid-2zp6q64z>
+下载后请将文件放入 <code data-astro-cid-2zp6q64z>src/content/downloads/</code> 目录（文件名：项目名.md），然后提交到 GitHub 自动部署。
+</p> </div> </section> </div> </div>  </main> <footer class="site-footer" data-astro-cid-sz7xmlte> <div class="footer-inner" data-astro-cid-sz7xmlte> <div class="footer-divider" data-astro-cid-sz7xmlte></div> <div class="footer-content" data-astro-cid-sz7xmlte> <p class="footer-text" data-astro-cid-sz7xmlte>
+&copy; 2026 lhy 的笔记 &middot; 使用 <a href="https://astro.build" target="_blank" rel="noopener noreferrer" data-astro-cid-sz7xmlte>Astro</a> 构建
+</p> <div class="footer-links" data-astro-cid-sz7xmlte> <a href="https://github.com/linhongyu3" target="_blank" rel="noopener noreferrer" data-astro-cid-sz7xmlte>GitHub</a> <span class="footer-sep" data-astro-cid-sz7xmlte>&middot;</span> <a href="mailto:linhongyu3@outlook.com" data-astro-cid-sz7xmlte>邮箱</a> <span class="footer-sep" data-astro-cid-sz7xmlte>&middot;</span> <a href="/rss.xml" data-astro-cid-sz7xmlte>RSS</a> </div> </div> </div> </footer>  </body></html>  <script>
+  (function() {
+    // Tab 切换
+    var tabBtns = document.querySelectorAll('.tab-btn');
+    var panes = document.querySelectorAll('.tab-pane');
+    tabBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var t = btn.getAttribute('data-tab');
+        tabBtns.forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        panes.forEach(function(p) {
+          p.style.display = p.getAttribute('data-pane') === t ? '' : 'none';
+        });
+      });
+    });
+
+    // 今天的日期
+    var today = new Date().toISOString().slice(0, 10);
+    var postDate = document.getElementById('post-date');
+    var dlDate = document.getElementById('dl-date');
+    if (postDate) postDate.value = today;
+    if (dlDate) dlDate.value = today;
+
+    // 生成文章 Markdown
+    function buildPostContent() {
+      var title = (document.getElementById('post-title').value || '').trim();
+      var date = document.getElementById('post-date').value || today;
+      var desc = (document.getElementById('post-desc').value || '').trim();
+      var cats = document.getElementById('post-cats').value;
+      var tags = document.getElementById('post-tags').value;
+      var body = document.getElementById('post-body').value || '';
+
+      var catsArr = cats ? cats.split(/[,，]/).map(function(s) { return s.trim(); }).filter(Boolean) : [];
+      var tagsArr = tags ? tags.split(/[,，]/).map(function(s) { return s.trim(); }).filter(Boolean) : [];
+
+      var fm = '---\n';
+      fm += 'title: ' + JSON.stringify(title || '未命名文章') + '\n';
+      if (desc) fm += 'description: ' + JSON.stringify(desc) + '\n';
+      fm += 'pubDate: ' + date + '\n';
+      if (catsArr.length) fm += 'categories: [' + catsArr.map(JSON.stringify).join(', ') + ']\n';
+      if (tagsArr.length) fm += 'tags: [' + tagsArr.map(JSON.stringify).join(', ') + ']\n';
+      fm += '---\n\n';
+      return fm + body.replace(/\s+$/, '') + '\n';
+    }
+
+    function buildDownloadContent() {
+      var name = (document.getElementById('dl-name').value || '').trim();
+      var cat = document.getElementById('dl-category').value || 'repost';
+      var desc = (document.getElementById('dl-desc').value || '').trim();
+      var version = document.getElementById('dl-version').value;
+      var size = document.getElementById('dl-size').value;
+      var date = document.getElementById('dl-date').value;
+      var group = (document.getElementById('dl-group').value || '').trim();
+      var url = document.getElementById('dl-url').value;
+
+      var fm = '---\n';
+      fm += 'name: ' + JSON.stringify(name || '未命名') + '\n';
+      if (desc) fm += 'description: ' + JSON.stringify(desc) + '\n';
+      fm += 'category: ' + cat + '\n';
+      if (url) fm += 'download_url: ' + url + '\n';
+      if (size) fm += 'size: ' + size + '\n';
+      if (version) fm += 'version: ' + version + '\n';
+      if (date) fm += 'date: ' + date + '\n';
+      if (group) fm += 'group: ' + JSON.stringify(group) + '\n';
+      fm += '---\n';
+      return fm;
+    }
+
+    function download(filename, text) {
+      var blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    }
+
+    function copy(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() {
+          alert('已复制到剪贴板');
+        }, function() { fallbackCopy(text); });
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); alert('已复制'); } catch (e) { alert('复制失败，请手动选择复制'); }
+      document.body.removeChild(ta);
+    }
+
+    // 文章
+    document.getElementById('btn-post-preview').addEventListener('click', function() {
+      var c = buildPostContent();
+      document.getElementById('post-preview-content').textContent = c;
+      document.getElementById('post-preview-wrap').style.display = '';
+    });
+
+    document.getElementById('btn-post-download').addEventListener('click', function() {
+      var c = buildPostContent();
+      var title = document.getElementById('post-title').value || '未命名';
+      var date = document.getElementById('post-date').value || today;
+      download(date + '-' + title.replace(/[\\/:*?"<>|\s]+/g, '-').replace(/^-|-$/g, '') + '.md', c);
+    });
+
+    document.getElementById('btn-post-download-2').addEventListener('click', function() {
+      document.getElementById('btn-post-download').click();
+    });
+
+    document.getElementById('btn-post-copy').addEventListener('click', function() {
+      copy(buildPostContent());
+    });
+
+    document.getElementById('btn-post-clear').addEventListener('click', function() {
+      if (!confirm('确定要清空所有内容吗？')) return;
+      ['post-title', 'post-desc', 'post-cats', 'post-tags', 'post-body'].forEach(function(id) {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('post-preview-wrap').style.display = 'none';
+    });
+
+    // 下载项
+    document.getElementById('btn-dl-preview').addEventListener('click', function() {
+      var c = buildDownloadContent();
+      document.getElementById('dl-preview-content').textContent = c;
+      document.getElementById('dl-preview-wrap').style.display = '';
+    });
+
+    document.getElementById('btn-dl-download').addEventListener('click', function() {
+      var c = buildDownloadContent();
+      var name = document.getElementById('dl-name').value || '未命名';
+      download(name.replace(/[\\/:*?"<>|\s]+/g, '-') + '.md', c);
+    });
+
+    document.getElementById('btn-dl-download-2').addEventListener('click', function() {
+      document.getElementById('btn-dl-download').click();
+    });
+
+    document.getElementById('btn-dl-copy').addEventListener('click', function() {
+      copy(buildDownloadContent());
+    });
+
+    document.getElementById('btn-dl-clear').addEventListener('click', function() {
+      if (!confirm('确定要清空所有内容吗？')) return;
+      ['dl-name', 'dl-desc', 'dl-version', 'dl-size', 'dl-group', 'dl-url'].forEach(function(id) {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('dl-preview-wrap').style.display = 'none';
+    });
+  })();
+</script>
