@@ -1,0 +1,45 @@
+services:
+  halo:
+    image: halohub/halo:2.20
+    container_name: halo
+    restart: on-failure:3
+    depends_on:
+      - "halo-postgres"
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./halo:/root/.halo2
+    environment:
+      - TZ=Asia/Shanghai
+      - SPRING_R2DBC_URL=r2dbc:pool:postgres://halo-postgres:5432/halo
+      - SPRING_SQL_INIT_PLATFORM=postgres
+      - SPRING_LIQUIBASE_URL=jdbc:postgresql://halo-postgres:5432/halo
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME:-halo}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-halopassword}
+      - HALO_SECURITY_INITIALIZER_SUPERADMINUSERNAME=${ADMIN_USERNAME:-admin}
+      - HALO_SECURITY_INITIALIZER_SUPERADMINPASSWORD=${ADMIN_PASSWORD:-P@ssw0rd123}
+      - HALO_EXTERNAL_URL=${EXTERNAL_URL:-http://localhost:8090}
+      - HALO_CACHE=memory
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8090/actuator/health/readiness"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  halo-postgres:
+    image: postgres:16-alpine
+    container_name: halo-postgres
+    restart: on-failure:3
+    volumes:
+      - ./halo-postgres:/var/lib/postgresql/data
+    environment:
+      - TZ=Asia/Shanghai
+      - POSTGRES_DB=halo
+      - POSTGRES_USER=${DB_USERNAME:-halo}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-halopassword}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-halo}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
