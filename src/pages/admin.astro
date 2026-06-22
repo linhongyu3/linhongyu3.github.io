@@ -2,11 +2,11 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="文章管理" description="文章和下载项管理后台">
+<BaseLayout title="编辑" description="文章和下载项编辑器">
   <div class="admin-wrap">
     <div class="admin-inner">
       <header class="admin-header">
-        <h1 class="admin-title">文章管理</h1>
+        <h1 class="admin-title">编辑</h1>
         <p class="admin-subtitle">编写文章与下载项，生成 Markdown 文件后放入 <code>src/content/</code> 目录。</p>
       </header>
 
@@ -99,29 +99,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </div>
 
             <div class="form-item">
-              <label class="form-label">版本号</label>
-              <input type="text" id="dl-version" class="form-input" placeholder="例如：1.0.0">
-            </div>
-
-            <div class="form-item">
-              <label class="form-label">文件大小</label>
-              <input type="text" id="dl-size" class="form-input" placeholder="例如：55.8MB">
-            </div>
-
-            <div class="form-item">
-              <label class="form-label">发布日期</label>
-              <input type="date" id="dl-date" class="form-input">
-            </div>
-
-            <div class="form-item">
               <label class="form-label">分组（可留空）</label>
               <input type="text" id="dl-group" class="form-input" placeholder="例如：信息课脱离管控工具">
             </div>
+          </div>
 
-            <div class="form-item form-item-full">
-              <label class="form-label">下载链接</label>
-              <input type="text" id="dl-url" class="form-input" placeholder="https://github.com/.../releases/download/.../file.exe">
+          <!-- 版本管理区域 -->
+          <div class="versions-section">
+            <div class="versions-header">
+              <h3 class="versions-title">版本列表</h3>
+              <button type="button" class="btn-primary btn-sm" id="btn-add-version">+ 添加版本</button>
             </div>
+            <div id="versions-list"></div>
           </div>
 
           <div class="form-actions">
@@ -153,9 +142,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .admin-inner {
-    max-width: 900px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 clamp(1rem, 4vw, 3rem);
   }
 
   .admin-header {
@@ -324,6 +313,171 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-size: 0.82em;
     border: 1px solid var(--border);
   }
+
+  /* 版本管理样式 */
+  .versions-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--border);
+  }
+
+  .versions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .versions-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .btn-sm {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.75rem;
+  }
+
+  .version-block {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .version-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .version-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .version-remove {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.82rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    transition: color 0.2s, background-color 0.2s;
+  }
+
+  .version-remove:hover {
+    color: #e5484d;
+    background-color: rgba(229, 72, 77, 0.1);
+  }
+
+  .version-fields {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 640px) {
+    .version-fields {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .version-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .version-field-full {
+    grid-column: 1 / -1;
+  }
+
+  .version-input {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.85rem;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    outline: none;
+  }
+
+  .version-input:focus {
+    border-color: var(--accent);
+  }
+
+  /* 架构管理样式 */
+  .arch-section {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--border);
+  }
+
+  .arch-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .arch-title {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .arch-add {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .arch-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 100px auto;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .arch-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .arch-input {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    outline: none;
+  }
+
+  .arch-input:focus {
+    border-color: var(--accent);
+  }
+
+  .arch-remove {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+  }
+
+  .arch-remove:hover {
+    color: #e5484d;
+  }
 </style>
 
 <script is:inline>
@@ -345,9 +499,72 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     // 今天的日期
     var today = new Date().toISOString().slice(0, 10);
     var postDate = document.getElementById('post-date');
-    var dlDate = document.getElementById('dl-date');
     if (postDate) postDate.value = today;
-    if (dlDate) dlDate.value = today;
+
+    // 版本管理
+    var versionsList = document.getElementById('versions-list');
+    var versionCounter = 0;
+
+    function createVersionBlock() {
+      var idx = ++versionCounter;
+      var block = document.createElement('div');
+      block.className = 'version-block';
+      block.dataset.versionIdx = idx;
+      block.innerHTML =
+        '<div class="version-header">' +
+        '<span class="version-label">版本 #' + idx + '</span>' +
+        '<button type="button" class="version-remove">删除版本</button>' +
+        '</div>' +
+        '<div class="version-fields">' +
+        '<div class="version-field"><label class="form-label">版本号</label><input class="version-input v-version" placeholder="v2.0.0"></div>' +
+        '<div class="version-field"><label class="form-label">发布日期</label><input class="version-input v-date" type="date" value="' + today + '"></div>' +
+        '</div>' +
+        '<div class="arch-section">' +
+        '<div class="arch-header">' +
+        '<span class="arch-title">架构发行版</span>' +
+        '<button type="button" class="btn-primary btn-sm arch-add" data-version-idx="' + idx + '">+ 添加架构</button>' +
+        '</div>' +
+        '<div class="arch-list" data-version-idx="' + idx + '"></div>' +
+        '</div>';
+
+      // 删除版本按钮
+      block.querySelector('.version-remove').addEventListener('click', function() {
+        if (confirm('确定要删除这个版本吗？')) {
+          block.remove();
+        }
+      });
+
+      // 添加架构按钮
+      block.querySelector('.arch-add').addEventListener('click', function() {
+        createArchRow(block.querySelector('.arch-list'));
+      });
+
+      versionsList.appendChild(block);
+      // 默认添加一个架构
+      createArchRow(block.querySelector('.arch-list'));
+      return block;
+    }
+
+    function createArchRow(archList) {
+      var row = document.createElement('div');
+      row.className = 'arch-row';
+      row.innerHTML =
+        '<input class="arch-input a-arch" placeholder="x64">' +
+        '<input class="arch-input a-url" placeholder="下载链接">' +
+        '<input class="arch-input a-size" placeholder="大小">' +
+        '<button type="button" class="arch-remove">×</button>';
+
+      row.querySelector('.arch-remove').addEventListener('click', function() {
+        row.remove();
+      });
+
+      archList.appendChild(row);
+      return row;
+    }
+
+    document.getElementById('btn-add-version').addEventListener('click', createVersionBlock);
+    // 默认创建一个版本
+    createVersionBlock();
 
     // 生成文章 Markdown
     function buildPostContent() {
@@ -375,21 +592,51 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       var name = (document.getElementById('dl-name').value || '').trim();
       var cat = document.getElementById('dl-category').value || 'repost';
       var desc = (document.getElementById('dl-desc').value || '').trim();
-      var version = document.getElementById('dl-version').value;
-      var size = document.getElementById('dl-size').value;
-      var date = document.getElementById('dl-date').value;
       var group = (document.getElementById('dl-group').value || '').trim();
-      var url = document.getElementById('dl-url').value;
+
+      // 收集版本数据
+      var versions = [];
+      var versionBlocks = versionsList.querySelectorAll('.version-block');
+      versionBlocks.forEach(function(block) {
+        var vVersion = block.querySelector('.v-version').value.trim();
+        var vDate = block.querySelector('.v-date').value;
+
+        var architectures = [];
+        var archRows = block.querySelectorAll('.arch-row');
+        archRows.forEach(function(row) {
+          var arch = row.querySelector('.a-arch').value.trim();
+          var url = row.querySelector('.a-url').value.trim();
+          var size = row.querySelector('.a-size').value.trim();
+          if (arch || url) {
+            architectures.push({ arch: arch, download_url: url, size: size });
+          }
+        });
+
+        if (vVersion || architectures.length > 0) {
+          versions.push({ version: vVersion, date: vDate, architectures: architectures });
+        }
+      });
 
       var fm = '---\n';
       fm += 'name: ' + JSON.stringify(name || '未命名') + '\n';
       if (desc) fm += 'description: ' + JSON.stringify(desc) + '\n';
       fm += 'category: ' + cat + '\n';
-      if (url) fm += 'download_url: ' + url + '\n';
-      if (size) fm += 'size: ' + size + '\n';
-      if (version) fm += 'version: ' + version + '\n';
-      if (date) fm += 'date: ' + date + '\n';
       if (group) fm += 'group: ' + JSON.stringify(group) + '\n';
+      if (versions.length > 0) {
+        fm += 'versions:\n';
+        versions.forEach(function(v) {
+          fm += '  - version: ' + JSON.stringify(v.version || '') + '\n';
+          if (v.date) fm += '    date: ' + v.date + '\n';
+          if (v.architectures && v.architectures.length > 0) {
+            fm += '    architectures:\n';
+            v.architectures.forEach(function(a) {
+              fm += '      - arch: ' + JSON.stringify(a.arch || '') + '\n';
+              if (a.download_url) fm += '        download_url: ' + a.download_url + '\n';
+              if (a.size) fm += '        size: ' + a.size + '\n';
+            });
+          }
+        });
+      }
       fm += '---\n';
       return fm;
     }
@@ -477,9 +724,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     document.getElementById('btn-dl-clear').addEventListener('click', function() {
       if (!confirm('确定要清空所有内容吗？')) return;
-      ['dl-name', 'dl-desc', 'dl-version', 'dl-size', 'dl-group', 'dl-url'].forEach(function(id) {
+      ['dl-name', 'dl-desc', 'dl-group'].forEach(function(id) {
         document.getElementById(id).value = '';
       });
+      versionsList.innerHTML = '';
+      versionCounter = 0;
+      createVersionBlock();
       document.getElementById('dl-preview-wrap').style.display = 'none';
     });
   })();

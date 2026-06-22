@@ -1,14 +1,57 @@
 ---
-const { name, description, version, size, date, category, downloadUrl } = Astro.props;
-
-const formattedDate = date
-  ? new Date(date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
-  : null;
+const { name, description, category, versions = [], group } = Astro.props;
 
 const isSelfMade = category === 'self-made';
+
+// 格式化日期
+function formatDate(d) {
+  if (!d) return '';
+  const s = String(d);
+  const m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (m) return `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+  const dt = new Date(d);
+  if (!isNaN(dt.getTime())) {
+    const y = dt.getFullYear();
+    const mo = String(dt.getMonth() + 1).padStart(2, '0');
+    const da = String(dt.getDate()).padStart(2, '0');
+    return `${y}-${mo}-${da}`;
+  }
+  return s;
+}
+
+// 处理版本数据，兼容新旧格式
+const processedVersions = versions.map((v) => {
+  // 新格式：有 architectures 数组
+  if (v.architectures && v.architectures.length > 0) {
+    return {
+      version: String(v.version || ''),
+      date: formatDate(v.date),
+      architectures: v.architectures.map((a) => ({
+        arch: String(a.arch || ''),
+        download_url: a.download_url || '',
+        size: a.size || ''
+      }))
+    };
+  }
+  // 旧格式兼容：直接有 download_url
+  return {
+    version: String(v.version || ''),
+    date: formatDate(v.date),
+    architectures: [{
+      arch: '默认',
+      download_url: v.download_url || '',
+      size: v.size || ''
+    }]
+  };
+});
+
+const defaultVersion = processedVersions[0] || null;
+const defaultArch = defaultVersion?.architectures?.[0] || null;
+
+const versionsJson = JSON.stringify(processedVersions);
 ---
 
-<div class="download-card">
+<div class="download-card" data-category={category} data-group={group || ''}>
   <div class="dl-header">
     <div>
       <div class="dl-name">{name}</div>
@@ -20,19 +63,40 @@ const isSelfMade = category === 'self-made';
 
   {description && <p class="dl-desc">{description}</p>}
 
-  <div class="dl-meta">
-    {version && <span>v{version}</span>}
-    {version && size && <span class="meta-sep">&middot;</span>}
-    {size && <span>{size}</span>}
-    {formattedDate && ((version || size) && <span class="meta-sep">&middot;</span>)}
-    {formattedDate && <span>{formattedDate}</span>}
+  <!-- 版本选择 -->
+  <div class="dl-select-row">
+    <label class="dl-label">版本</label>
+    <select class="version-select" data-versions={versionsJson}>
+      {processedVersions.map((v) => (
+        <option value={v.version}>
+          {v.version}{v.date ? ` · ${v.date}` : ''}
+        </option>
+      ))}
+    </select>
   </div>
 
+  <!-- 架构选择（动态显示） -->
+  <div class="dl-select-row arch-row" style="display: none;">
+    <label class="dl-label">架构</label>
+    <select class="arch-select"></select>
+  </div>
+
+  <!-- 当前选择信息 -->
+  <div class="dl-meta">
+    <span class="meta-version">版本：{defaultVersion?.version || '-'}</span>
+    {defaultVersion?.architectures?.length > 1 && (
+      <span class="meta-arch">架构：{defaultArch?.arch || '-'}</span>
+    )}
+    {defaultArch?.size && (
+      <span class="meta-size">大小：{defaultArch.size}</span>
+    )}
+  </div>
+
+  <!-- 下载按钮 -->
   <div class="dl-actions">
     <a
-      href={downloadUrl}
+      href={defaultArch?.download_url || '#'}
       class="btn-primary dl-btn"
-      data-original-url={downloadUrl}
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -62,6 +126,58 @@ const isSelfMade = category === 'self-made';
     margin-bottom: 0.25rem;
   }
 
+  .dl-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0 0 0.75rem;
+    line-height: 1.4;
+  }
+
+  .dl-select-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .dl-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 3rem;
+  }
+
+  .version-select,
+  .arch-select,
+  .mirror-select {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.82rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: border-color 0.2s;
+    outline: none;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .version-select:focus,
+  .arch-select:focus,
+  .mirror-select:focus {
+    border-color: var(--accent);
+  }
+
+  .dl-meta {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+
   .dl-actions {
     display: flex;
     align-items: center;
@@ -73,40 +189,91 @@ const isSelfMade = category === 'self-made';
     font-size: 0.85rem;
     padding: 0.45rem 1rem;
   }
-
-  .mirror-select {
-    flex: 1;
-    padding: 0.45rem 0.75rem;
-    font-size: 0.82rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background-color: var(--bg-primary);
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: border-color 0.2s;
-    outline: none;
-    max-width: 160px;
-  }
-
-  .mirror-select:focus {
-    border-color: var(--accent);
-  }
-
-  .meta-sep {
-    color: var(--border);
-  }
 </style>
 
 <script is:inline>
-  document.querySelectorAll('.mirror-select').forEach(function(select) {
-    select.addEventListener('change', function() {
-      var url = this.value;
-      var card = this.closest('.download-card');
-      var btn = card && card.querySelector('.dl-btn');
-      var orig = btn && btn.getAttribute('data-original-url');
-      if (orig) {
-        btn.href = url ? url + orig : orig;
+  document.querySelectorAll('.download-card').forEach(function(card) {
+    var versionSelect = card.querySelector('.version-select');
+    var archRow = card.querySelector('.arch-row');
+    var archSelect = card.querySelector('.arch-select');
+    var mirrorSelect = card.querySelector('.mirror-select');
+    var btn = card.querySelector('.dl-btn');
+    var metaVersion = card.querySelector('.meta-version');
+    var metaArch = card.querySelector('.meta-arch');
+    var metaSize = card.querySelector('.meta-size');
+
+    var versions = [];
+    try {
+      var raw = versionSelect && versionSelect.getAttribute('data-versions');
+      if (raw) versions = JSON.parse(raw);
+    } catch (e) {}
+
+    function updateArchSelect() {
+      if (!archSelect || !archRow) return;
+      var idx = versionSelect ? versionSelect.selectedIndex : 0;
+      var v = versions[idx];
+      if (!v || !v.architectures || v.architectures.length === 0) return;
+
+      // 清空并填充架构选项
+      archSelect.innerHTML = '';
+      v.architectures.forEach(function(a) {
+        var opt = document.createElement('option');
+        opt.value = a.arch;
+        opt.textContent = a.arch + (a.size ? ' · ' + a.size : '');
+        archSelect.appendChild(opt);
+      });
+
+      // 显示/隐藏架构选择行
+      archRow.style.display = v.architectures.length > 1 ? '' : 'none';
+    }
+
+    function updateHref() {
+      if (!btn) return;
+      var vIdx = versionSelect ? versionSelect.selectedIndex : 0;
+      var v = versions[vIdx];
+      var aIdx = archSelect ? archSelect.selectedIndex : 0;
+      var a = v && v.architectures && v.architectures[aIdx] ? v.architectures[aIdx] : null;
+      var mirror = mirrorSelect ? mirrorSelect.value : '';
+      var base = a && a.download_url ? a.download_url : '#';
+
+      btn.href = mirror ? mirror + base : base;
+
+      // 更新元信息显示
+      if (metaVersion) metaVersion.textContent = '版本：' + (v && v.version ? v.version : '-');
+      if (metaArch) {
+        if (v && v.architectures && v.architectures.length > 1 && a) {
+          metaArch.style.display = '';
+          metaArch.textContent = '架构：' + (a.arch || '-');
+        } else {
+          metaArch.style.display = 'none';
+        }
       }
-    });
+      if (metaSize) {
+        if (a && a.size) {
+          metaSize.style.display = '';
+          metaSize.textContent = '大小：' + a.size;
+        } else {
+          metaSize.style.display = 'none';
+        }
+      }
+    }
+
+    // 初始化
+    updateArchSelect();
+    updateHref();
+
+    // 事件监听
+    if (versionSelect) {
+      versionSelect.addEventListener('change', function() {
+        updateArchSelect();
+        updateHref();
+      });
+    }
+    if (archSelect) {
+      archSelect.addEventListener('change', updateHref);
+    }
+    if (mirrorSelect) {
+      mirrorSelect.addEventListener('change', updateHref);
+    }
   });
 </script>
